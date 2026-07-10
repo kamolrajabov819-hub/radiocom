@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import "../lib/i18n";
+import { hydrateLanguage } from "../lib/i18n";
 import { Nav } from "../components/Nav";
 import { Footer } from "../components/Footer";
 import { StickyLeadNet } from "../components/StickyLeadNet";
