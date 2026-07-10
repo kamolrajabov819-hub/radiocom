@@ -1,0 +1,157 @@
+{
+  "nav": {
+    "home": "Home",
+    "catalog": "Catalog",
+    "poc": "PoC Systems",
+    "service": "Service",
+    "contact": "Contact"
+  },
+  "hero": {
+    "eyebrow": "Authorized distributor · Tashkent",
+    "title_a": "Unbreakable",
+    "title_b": "communication.",
+    "sub": "11 years on the market. 10,000+ clients. The official hub for Motorola, Hytera and Radiocom RC in Uzbekistan.",
+    "cta_primary": "Book free testing",
+    "cta_secondary": "Explore industries"
+  },
+  "marquee": [
+    "35 radio types",
+    "12-month warranty",
+    "Authorized service center",
+    "10,000+ clients",
+    "Free nationwide delivery",
+    "Trade-in program"
+  ],
+  "industries": {
+    "title": "Industries",
+    "kicker": "Turnkey solutions",
+    "horeca": { "name": "HoReCa", "desc": "Hotels, restaurants, events. Discreet earpieces, clean channels." },
+    "construction": { "name": "Construction", "desc": "Massive sites. IP67 ruggedness, long-range coverage." },
+    "security": { "name": "Security", "desc": "Private security, facility protection, government. Encryption, GPS." }
+  },
+  "tradein": {
+    "kicker": "TRADE-IN",
+    "title_a": "Trade the old.",
+    "title_b": "Take the new.",
+    "desc": "Bring your worn-out walkie-talkie. Our specialists match it to a fresh Motorola or Hytera model at a massive discount.",
+    "cta": "Start trade-in"
+  },
+  "stats": {
+    "types": "radio types",
+    "clients": "clients",
+    "years": "years on the market"
+  },
+  "brands_title": "Brands we distribute",
+  "catalog": {
+    "title_a": "Multi-brand",
+    "title_b": "catalog.",
+    "sub": "Professional and amateur radios, PoC devices, accessories and PDAs. Request a quote — a manager will build a proposal for your case.",
+    "filters": "Filters",
+    "categories": "Categories",
+    "brands": "Brands",
+    "features": "Features",
+    "all": "All",
+    "results": "results",
+    "clear": "Reset",
+    "request": "Request quote",
+    "empty": "No models match the selected filters."
+  },
+  "product": {
+    "spec": "Specifications",
+    "band": "Band",
+    "range": "Range",
+    "battery": "Battery",
+    "protection": "Protection",
+    "features": "Features",
+    "cta": "Request quote"
+  },
+  "form": {
+    "title": "Request quote",
+    "sub": "Leave your contacts — a manager will reach out within one business day.",
+    "name": "Your name",
+    "company": "Company",
+    "phone": "Phone",
+    "qty": "Quantity",
+    "message": "Message",
+    "submit": "Send request",
+    "success": "Request sent. We'll be in touch.",
+    "test_title": "Free on-site test"
+  },
+  "poc": {
+    "kicker": "PoC · PUSH-TO-TALK OVER CELLULAR",
+    "title_a": "Global range.",
+    "title_b": "Zero repeaters.",
+    "sub": "Push-to-Talk over LTE and WiFi. Instant comms with no infrastructure to build — group calls, GPS and multimedia included.",
+    "vs_title": "PoC vs PMR",
+    "vs_sub": "Real trade-offs by parameter, not marketing.",
+    "rows": {
+      "coverage": "Coverage",
+      "infra": "Infrastructure",
+      "media": "Multimedia",
+      "gps": "GPS positioning",
+      "scale": "Scale",
+      "cost": "Entry cost"
+    },
+    "poc_vals": {
+      "coverage": "Global (LTE / WiFi)",
+      "infra": "None required",
+      "media": "Voice, photo, video, text",
+      "gps": "Built-in GPS/GLONASS",
+      "scale": "Thousands of users",
+      "cost": "Low"
+    },
+    "pmr_vals": {
+      "coverage": "Local (VHF/UHF)",
+      "infra": "Repeaters, antennas",
+      "media": "Voice only",
+      "gps": "Optional",
+      "scale": "Limited by zone",
+      "cost": "High"
+    },
+    "design": {
+      "kicker": "NETWORK DESIGN · COMMISSIONING",
+      "title": "We engineer the network for your site.",
+      "steps": [
+        "Site survey and installation assessment",
+        "Data collection and project documentation",
+        "Equipment selection matched to your parameters",
+        "Frequency licensing with State Comms of Uzbekistan",
+        "Commissioning and acceptance documentation"
+      ]
+    },
+    "rental": {
+      "kicker": "RENTAL",
+      "title": "From 1 day to 5+ years.",
+      "desc": "Motorola with accessories, spare batteries and pre-tuning on Radiocom's own licensed nationwide frequencies.",
+      "cta": "Request rental"
+    }
+  },
+  "service": {
+    "kicker": "AUTHORIZED SERVICE CENTER",
+    "title_a": "Repairs",
+    "title_b": "you can trust.",
+    "sub": "Warranty and post-warranty service for Motorola, Hytera and Vertex Standard radios. Original parts, fixed pricing, diagnostics on dedicated hardware.",
+    "advantages": {
+      "certified": "Certified technicians",
+      "parts": "Original parts",
+      "fast": "24/7 fast repair",
+      "fixed": "Fixed pricing"
+    },
+    "flow": ["Diagnostics", "Analysis", "Testing", "Repair"],
+    "policy_title": "Returns & exchanges",
+    "policy": [
+      { "q": "Returns of goods in proper condition", "a": "The buyer may cancel the order before receipt and within 5 days after — provided the goods retain packaging, seals, tags and receipt." },
+      { "q": "Returns of defective goods", "a": "If defects are found — within 24 hours of purchase — replacement or refund per the Uzbek consumer protection law." },
+      { "q": "Replacement timelines", "a": "From 7 days for obvious factory defects up to 2 months for delivery to remote territories." }
+    ]
+  },
+  "footer": {
+    "hours": "Mon-Fri · 09:00–18:00",
+    "address": "Tashkent, Uzbekiston Ovozi 2 (Tata Hotel, 1st floor)",
+    "rights": "© Radiocom. All rights reserved."
+  },
+  "lead": {
+    "float": "Free test",
+    "tooltip": "Request a specialist visit"
+  }
+}
