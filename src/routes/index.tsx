@@ -16,8 +16,8 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: "Radiocom — Professional Radio Systems in Uzbekistan" },
       { name: "description", content: "11 years. 10,000+ clients. Motorola, Hytera and PoC radios with authorized service, free testing and nationwide delivery." },
-      { property: "og:title", content: "Radiocom — Unbreakable Communication" },
-      { property: "og:description", content: "The official hub for Motorola, Hytera and Radiocom RC in Uzbekistan." },
+      { property: "og:title", content: "Radiocom — Professional Radio Systems in Uzbekistan" },
+      { property: "og:description", content: "11 years. 10,000+ clients. Motorola, Hytera and PoC radios with authorized service, free testing and nationwide delivery." },
     ],
   }),
   component: HomePage,
