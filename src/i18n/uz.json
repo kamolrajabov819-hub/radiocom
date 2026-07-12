@@ -4,7 +4,14 @@
     "catalog": "Katalog",
     "poc": "PoC tizimlari",
     "service": "Servis",
-    "contact": "Bog'lanish"
+    "industries": "Sohalar",
+    "contact": "Bog'lanish",
+    "download": "Katalogni yuklab olish",
+    "theme_light": "Yorug' rejim",
+    "theme_dark": "Qorong'u rejim",
+    "tradein_badge": "Trade-In",
+    "menu": "Menyu",
+    "close": "Yopish"
   },
   "hero": {
     "eyebrow": "Rasmiy distribyutor · Toshkent",
@@ -25,9 +32,18 @@
   "industries": {
     "title": "Sohalar",
     "kicker": "Tayyor yechimlar",
-    "horeca": { "name": "HoReCa", "desc": "Mehmonxona, restoran, tadbirlar. Yashirin garnituralar, toza efir." },
-    "construction": { "name": "Qurilish", "desc": "Yirik ob'ektlar. IP67 himoya, uzoq masofa aloqasi." },
-    "security": { "name": "Xavfsizlik", "desc": "Xususiy qo'riqlash, ob'ekt himoyasi, davlat. Shifrlash, GPS." }
+    "overview_sub": "Biz O'zbekistonning 6 asosiy sohasi uchun radio tizimlarini loyihalashtirdik. O'z sohangizni tanlang — mos yechimni ko'rsatamiz.",
+    "view_all": "Barcha sohalar",
+    "problem_title": "Muammo",
+    "solution_title": "Bizning yechim",
+    "recommended": "Tavsiya etilgan modellar",
+    "cta": "Bepul mutaxassisni chaqirish",
+    "horeca":        { "name": "HoReCa",              "desc": "Mehmonxona, restoran, tadbirlar.",                     "problem": "Xodimlar shovqinli zallarda va qavatlar orasida aloqani yo'qotadi.",                                   "solution": "Kompakt PMR ratsiyalari va yashirin garnituralar. Shovqinsiz va litsenziyasiz tezkor koordinatsiya." },
+    "construction":  { "name": "Qurilish",            "desc": "Yirik ob'ektlar. IP67 himoya, uzoq masofa.",           "problem": "Chang, tebranish, brigadalar orasida kilometrlar. Oddiy telefonlar dosh bermaydi.",                    "solution": "IP67/IP68 himoyali DMR ratsiyalar va retranslyatorlar bilan to'liq qamrov." },
+    "security":      { "name": "Xavfsizlik",          "desc": "Xususiy qo'riqlash, davlat.",                          "problem": "Shifrlangan aloqa, GPS-monitoring va tugma kerak.",                                                    "solution": "Shifrlash, tugma va GPS bilan DMR ratsiyalar. Dispetcher hammasini ko'rib turadi." },
+    "mining":        { "name": "Kon va neft-gaz",     "desc": "Karyerlar, konlar, neft-gaz infratuzilmasi.",          "problem": "Katta hududlar, portlash xavfli zonalar, aniq uchqun xavfsizligi talablari.",                         "solution": "ATEX mos DP4800/DP4600 ratsiyalar va SLR8000 retranslyatorlar. To'liq qamrov." },
+    "transport":     { "name": "Transport va logistika", "desc": "Avtoparklar, omborlar, ekspeditsiyalar.",           "problem": "Dispetcher haydovchilarni shahar tashqarisida yo'qotadi. Mobil aloqa qimmat va uziladi.",              "solution": "Butun mamlakat bo'ylab LTE qamrovli Caltta E690 PoC ratsiyalari va DM4600 avtomobil stansiyalari." },
+    "manufacturing": { "name": "Ishlab chiqarish va omborxonalar", "desc": "Zavodlar, sexlar, distribyutsiya markazlari.", "problem": "Turli uchastkalardagi smenalar, sanoat shovqini, brigadirlar tezkor koordinatsiyaga muhtoj.",       "solution": "Retranslyator va guruh chaqiruvlari bilan DMR tizim. Ombor uchun sanoat KPK." }
   },
   "tradein": {
     "kicker": "TRADE-IN",
@@ -36,12 +52,9 @@
     "desc": "Eski ratsiyangizni olib keling — mutaxassislarimiz sizga yangi Motorola yoki Hytera modelini katta chegirma bilan taklif qiladi.",
     "cta": "Almashishni boshlash"
   },
-  "stats": {
-    "types": "ratsiya turi",
-    "clients": "mijoz",
-    "years": "yil bozorda"
-  },
+  "stats": { "types": "ratsiya turi", "clients": "mijoz", "years": "yil bozorda" },
   "brands_title": "Portfelimizdagi brendlar",
+  "brands": { "models": "model" },
   "catalog": {
     "title_a": "Ko'p brendli",
     "title_b": "katalog.",
@@ -54,15 +67,16 @@
     "results": "natija",
     "clear": "Tozalash",
     "request": "Taklif so'rash",
-    "empty": "Tanlangan filtrlar bo'yicha modellar topilmadi."
+    "empty": "Tanlangan filtrlar bo'yicha modellar topilmadi.",
+    "download": "Narxlar ro'yxatini yuklab olish (PDF)",
+    "price": "Narx"
   },
   "product": {
     "spec": "Xususiyatlar",
-    "band": "Diapazon",
-    "range": "Masofa",
-    "battery": "Batareya",
-    "protection": "Himoya",
+    "range_city": "Shaharda masofa",
+    "range_open": "Ochiq joyda masofa",
     "features": "Xususiyatlar",
+    "price": "Narx",
     "cta": "Taklif so'rash"
   },
   "form": {
@@ -84,30 +98,9 @@
     "sub": "LTE va WiFi orqali Push-to-Talk. Infratuzilma qurmasdan bir zumda aloqa — guruh chaqiruvlari, GPS va multimedia bilan.",
     "vs_title": "PoC va PMR",
     "vs_sub": "Marketing emas, haqiqiy parametrlar.",
-    "rows": {
-      "coverage": "Qamrov",
-      "infra": "Infratuzilma",
-      "media": "Multimedia",
-      "gps": "GPS",
-      "scale": "Miqyos",
-      "cost": "Kirish narxi"
-    },
-    "poc_vals": {
-      "coverage": "Global (LTE / WiFi)",
-      "infra": "Talab etilmaydi",
-      "media": "Ovoz, foto, video, matn",
-      "gps": "Ichki GPS/GLONASS",
-      "scale": "Minglab foydalanuvchi",
-      "cost": "Past"
-    },
-    "pmr_vals": {
-      "coverage": "Mahalliy (VHF/UHF)",
-      "infra": "Retranslyator, antenna",
-      "media": "Faqat ovoz",
-      "gps": "Ixtiyoriy",
-      "scale": "Zona bilan cheklangan",
-      "cost": "Yuqori"
-    },
+    "rows": { "coverage": "Qamrov", "infra": "Infratuzilma", "media": "Multimedia", "gps": "GPS", "scale": "Miqyos", "cost": "Kirish narxi" },
+    "poc_vals": { "coverage": "Global (LTE / WiFi)", "infra": "Talab etilmaydi", "media": "Ovoz, foto, video, matn", "gps": "Ichki GPS/GLONASS", "scale": "Minglab foydalanuvchi", "cost": "Past" },
+    "pmr_vals": { "coverage": "Mahalliy (VHF/UHF)", "infra": "Retranslyator, antenna", "media": "Faqat ovoz", "gps": "Ixtiyoriy", "scale": "Zona bilan cheklangan", "cost": "Yuqori" },
     "design": {
       "kicker": "LOYIHALASH · ISHGA TUSHIRISH",
       "title": "Sizning ob'ektingiz uchun tarmoq quramiz.",
@@ -130,7 +123,8 @@
     "kicker": "VAKOLATLI SERVIS MARKAZI",
     "title_a": "Ishonchli",
     "title_b": "ta'mirlash.",
-    "sub": "Motorola, Hytera va Vertex Standard ratsiyalari uchun kafolat va kafolatdan keyingi xizmat. Original ehtiyot qismlar, qat'iy narxlar.",
+    "sub": "Motorola, Hytera va Vertex Standard ratsiyalari uchun kafolat va kafolatdan keyingi xizmat. Original ehtiyot qismlar.",
+    "request_repair": "Ta'mirlashga ariza",
     "advantages": {
       "certified": "Sertifikatlangan mutaxassislar",
       "parts": "Original ehtiyot qismlar",
@@ -139,6 +133,7 @@
     },
     "flow": ["Diagnostika", "Tahlil", "Testlash", "Ta'mirlash"],
     "policy_title": "Qaytarish va almashish",
+    "visit_title": "Ofisga tashrif buyuring",
     "policy": [
       { "q": "Sifatli mahsulotni qaytarish", "a": "Xaridor mahsulotni olgunga qadar va olgandan keyin 5 kun ichida qaytarishi mumkin — o'ram, yorliq va chek saqlangan holda." },
       { "q": "Nuqsonli mahsulotni qaytarish", "a": "Nuqson topilganda — sotib olingandan keyin 24 soat ichida — O'zbekiston Iste'molchilar huquqlarini himoya qilish qonuni bo'yicha almashtirish yoki qaytarish." },
@@ -148,10 +143,11 @@
   "footer": {
     "hours": "Du-Ju · 09:00–18:00",
     "address": "Toshkent, O'zbekiston Ovozi 2 (Tata mehmonxonasi, 1-qavat)",
-    "rights": "© Radiocom. Barcha huquqlar himoyalangan."
+    "rights": "© Radiocom. Barcha huquqlar himoyalangan.",
+    "follow": "Bizni kuzatib boring",
+    "map_title": "Radiocom · Toshkent",
+    "nav_col": "Navigatsiya",
+    "contact_col": "Kontaktlar"
   },
-  "lead": {
-    "float": "Bepul sinov",
-    "tooltip": "Mutaxassisni chaqirish"
-  }
+  "lead": { "float": "Bepul sinov", "tooltip": "Mutaxassisni chaqirish" }
 }
