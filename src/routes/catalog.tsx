@@ -2,24 +2,25 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight, Check, X } from "lucide-react";
-import { products, categoryLabels, allBrands, type Brand, type Category, type Product } from "@/data/products";
+import { ArrowUpRight, Check, X, FileDown } from "lucide-react";
+import { products, categoryLabels, allBrands, formatPrice, type Brand, type Category, type Product } from "@/data/products";
 import { openLead } from "@/components/LeadFormSheet";
 import { Reveal, RevealWords } from "@/components/Reveal";
+import catalogAsset from "@/assets/radiocom-catalog.pdf.asset.json";
 
 export const Route = createFileRoute("/catalog")({
   head: () => ({
     meta: [
       { title: "Catalog — Motorola, Hytera, PoC & Amateur Radios | Radiocom" },
-      { name: "description", content: "Filterable multi-brand catalog: professional and amateur radios, PoC devices, accessories, PDAs and baby monitors. Request a tailored quote." },
+      { name: "description", content: "Filterable multi-brand catalog: professional and amateur radios, PoC devices, accessories, PDAs and baby monitors." },
       { property: "og:title", content: "Radiocom Catalog — Multi-brand radio systems" },
-      { property: "og:description", content: "Professional and amateur radios from Motorola, Hytera, Baofeng and more." },
+      { property: "og:description", content: "Professional and amateur radios from Motorola, Hytera, Radiocom RC, Caltta and more." },
     ],
   }),
   component: CatalogPage,
 });
 
-const featureChips = ["GPS", "Bluetooth", "IP67", "IP68", "PoC", "DMR"] as const;
+const featureChips = ["DMR", "PoC", "GPS", "IP67", "IP68", "LTE"] as const;
 
 function CatalogPage() {
   const { t, i18n } = useTranslation();
@@ -33,7 +34,7 @@ function CatalogPage() {
     return products.filter((p) => {
       if (cat && p.category !== cat) return false;
       if (brand && p.brand !== brand) return false;
-      if (features.length && !features.every((f) => p.tags.some((t) => t.toLowerCase().includes(f.toLowerCase())))) return false;
+      if (features.length && !features.every((f) => p.tags.some((tg) => tg.toLowerCase().includes(f.toLowerCase())))) return false;
       return true;
     });
   }, [cat, brand, features]);
@@ -60,10 +61,18 @@ function CatalogPage() {
         </Reveal>
       </section>
 
-      <section className="border-t hairline px-6 md:px-10 py-10 grid grid-cols-12 gap-8 md:gap-12">
-        {/* Sidebar */}
-        <aside className="col-span-12 md:col-span-3 lg:col-span-3">
+      <section className="border-t hairline px-6 md:px-10 py-10 grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12">
+        <aside className="md:col-span-3 lg:col-span-3">
           <div className="md:sticky md:top-24 space-y-8">
+            <a
+              href={catalogAsset.url}
+              download="radiocom-catalog.pdf"
+              className="w-full inline-flex items-center justify-between gap-2 text-mono text-[11px] border border-signal text-signal px-4 py-3 hover:bg-signal hover:text-crisp transition-colors"
+            >
+              <span className="flex items-center gap-2"><FileDown className="w-4 h-4" /> {t("catalog.download")}</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
+            </a>
+
             <div className="flex items-baseline justify-between">
               <div className="text-mono text-[11px] text-cool">{t("catalog.filters")}</div>
               <button onClick={clear} className="text-mono text-[10px] text-signal hover:underline">
@@ -112,8 +121,7 @@ function CatalogPage() {
           </div>
         </aside>
 
-        {/* Grid */}
-        <div className="col-span-12 md:col-span-9 lg:col-span-9">
+        <div className="md:col-span-9 lg:col-span-9">
           {filtered.length === 0 ? (
             <div className="py-32 text-center text-cool text-mono text-sm">{t("catalog.empty")}</div>
           ) : (
@@ -140,13 +148,11 @@ function FilterGroup({ title, children }: { title: string; children: React.React
   );
 }
 
-function FilterRow({
-  active, onClick, children,
-}: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+function FilterRow({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
     <button
       onClick={onClick}
-      className={`w-full text-left text-sm py-1.5 flex items-center justify-between group transition-colors ${
+      className={`w-full text-left text-sm py-1.5 flex items-center justify-between group transition-colors min-h-8 ${
         active ? "text-signal" : "text-crisp/80 hover:text-crisp"
       }`}
     >
@@ -156,13 +162,13 @@ function FilterRow({
   );
 }
 
-function ProductCard({
+export function ProductCard({
   p, lang, idx, onOpen,
 }: { p: Product; lang: "ru" | "en" | "uz"; idx: number; onOpen: () => void }) {
   return (
     <motion.button
       onClick={onOpen}
-      className="relative bg-charcoal p-8 text-left group overflow-hidden"
+      className="relative bg-charcoal p-6 md:p-8 text-left group overflow-hidden"
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.1 }}
@@ -170,11 +176,11 @@ function ProductCard({
     >
       <div className="absolute inset-0 bg-signal origin-bottom scale-y-0 group-hover:scale-y-100 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]" />
       <div className="relative">
-        <div className="flex items-start justify-between mb-6">
+        <div className="flex items-start justify-between mb-4">
           <div className="text-mono text-[10px] text-cool group-hover:text-crisp">{p.brand}</div>
           <ArrowUpRight className="w-4 h-4 text-cool group-hover:text-crisp -rotate-45 group-hover:rotate-0 transition-transform" />
         </div>
-        <div className="aspect-[3/4] flex items-center justify-center mb-6 overflow-hidden">
+        <div className="aspect-[4/5] flex items-center justify-center mb-4 overflow-hidden">
           <img
             src={p.image}
             alt={p.name}
@@ -182,14 +188,17 @@ function ProductCard({
             loading="lazy"
           />
         </div>
-        <h3 className="text-display text-2xl leading-tight mb-3 group-hover:text-crisp">
+        <h3 className="text-display text-xl md:text-2xl leading-tight mb-2 group-hover:text-crisp">
           {p.name}
         </h3>
-        <div className="text-mono text-[10px] text-cool group-hover:text-crisp/80 mb-4">
+        <div className="text-mono text-[10px] text-cool group-hover:text-crisp/80 mb-3">
           {categoryLabels[p.category][lang]}
         </div>
+        <div className="text-display text-xl text-signal group-hover:text-crisp mb-3">
+          {formatPrice(p.price, lang)}
+        </div>
         <div className="flex flex-wrap gap-1.5">
-          {p.tags.map((tg) => (
+          {p.tags.slice(0, 3).map((tg) => (
             <span key={tg} className="text-mono text-[9px] px-2 py-1 border border-crisp/15 group-hover:border-crisp/40">
               ✓ {tg}
             </span>
@@ -232,15 +241,14 @@ function ProductPanel({
                 <img src={product.image} alt={product.name} className="max-h-full max-w-full object-contain" />
               </div>
               <h2 className="text-display text-4xl md:text-5xl leading-tight mb-3">{product.name}</h2>
-              <div className="text-mono text-[11px] text-cool mb-6">{categoryLabels[product.category][lang]}</div>
+              <div className="text-mono text-[11px] text-cool mb-4">{categoryLabels[product.category][lang]}</div>
+              <div className="text-display text-3xl text-signal mb-6">{formatPrice(product.price, lang)}</div>
               <p className="text-cool leading-relaxed mb-8">{product.blurb}</p>
 
               <div className="text-mono text-[10px] text-cool mb-4">{t("product.spec")}</div>
               <dl className="border-t hairline mb-8">
-                <SpecRow label={t("product.band")} val={product.band} />
-                <SpecRow label={t("product.range")} val={product.range} />
-                <SpecRow label={t("product.battery")} val={product.battery} />
-                <SpecRow label={t("product.protection")} val={product.protection} />
+                <SpecRow label={t("product.range_city")} val={product.rangeCity} />
+                {product.rangeOpen && <SpecRow label={t("product.range_open")} val={product.rangeOpen} />}
               </dl>
 
               <div className="text-mono text-[10px] text-cool mb-3">{t("product.features")}</div>
@@ -257,7 +265,7 @@ function ProductPanel({
                   onClose();
                   setTimeout(() => openLead({ product: product.name }), 350);
                 }}
-                className="w-full bg-signal text-crisp text-mono text-[13px] py-4 hover:bg-signal/90 flex items-center justify-center gap-3 transition-colors"
+                className="w-full bg-signal text-crisp text-mono text-[13px] py-4 hover:bg-signal/90 flex items-center justify-center gap-3 transition-colors min-h-12"
               >
                 {t("product.cta")} <ArrowUpRight className="w-4 h-4" />
               </button>

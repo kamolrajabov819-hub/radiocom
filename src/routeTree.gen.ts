@@ -13,6 +13,8 @@ import { Route as ServiceRouteImport } from './routes/service'
 import { Route as PocRouteImport } from './routes/poc'
 import { Route as CatalogRouteImport } from './routes/catalog'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as IndustriesIndexRouteImport } from './routes/industries.index'
+import { Route as IndustriesSlugRouteImport } from './routes/industries.$slug'
 
 const ServiceRoute = ServiceRouteImport.update({
   id: '/service',
@@ -34,18 +36,32 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IndustriesIndexRoute = IndustriesIndexRouteImport.update({
+  id: '/industries/',
+  path: '/industries/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndustriesSlugRoute = IndustriesSlugRouteImport.update({
+  id: '/industries/$slug',
+  path: '/industries/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/catalog': typeof CatalogRoute
   '/poc': typeof PocRoute
   '/service': typeof ServiceRoute
+  '/industries/$slug': typeof IndustriesSlugRoute
+  '/industries/': typeof IndustriesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/catalog': typeof CatalogRoute
   '/poc': typeof PocRoute
   '/service': typeof ServiceRoute
+  '/industries/$slug': typeof IndustriesSlugRoute
+  '/industries': typeof IndustriesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +69,34 @@ export interface FileRoutesById {
   '/catalog': typeof CatalogRoute
   '/poc': typeof PocRoute
   '/service': typeof ServiceRoute
+  '/industries/$slug': typeof IndustriesSlugRoute
+  '/industries/': typeof IndustriesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/catalog' | '/poc' | '/service'
+  fullPaths:
+    | '/'
+    | '/catalog'
+    | '/poc'
+    | '/service'
+    | '/industries/$slug'
+    | '/industries/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/catalog' | '/poc' | '/service'
-  id: '__root__' | '/' | '/catalog' | '/poc' | '/service'
+  to:
+    | '/'
+    | '/catalog'
+    | '/poc'
+    | '/service'
+    | '/industries/$slug'
+    | '/industries'
+  id:
+    | '__root__'
+    | '/'
+    | '/catalog'
+    | '/poc'
+    | '/service'
+    | '/industries/$slug'
+    | '/industries/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +104,8 @@ export interface RootRouteChildren {
   CatalogRoute: typeof CatalogRoute
   PocRoute: typeof PocRoute
   ServiceRoute: typeof ServiceRoute
+  IndustriesSlugRoute: typeof IndustriesSlugRoute
+  IndustriesIndexRoute: typeof IndustriesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -99,6 +138,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/industries/': {
+      id: '/industries/'
+      path: '/industries'
+      fullPath: '/industries/'
+      preLoaderRoute: typeof IndustriesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/industries/$slug': {
+      id: '/industries/$slug'
+      path: '/industries/$slug'
+      fullPath: '/industries/$slug'
+      preLoaderRoute: typeof IndustriesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -107,17 +160,9 @@ const rootRouteChildren: RootRouteChildren = {
   CatalogRoute: CatalogRoute,
   PocRoute: PocRoute,
   ServiceRoute: ServiceRoute,
+  IndustriesSlugRoute: IndustriesSlugRoute,
+  IndustriesIndexRoute: IndustriesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

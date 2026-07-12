@@ -1,84 +1,98 @@
-# Radiocom.uz — Build Plan
 
-An award-style, brutalist-editorial marketing site for Uzbekistan's leading pro radio distributor. Static content only (no e-commerce, no backend). All CTAs feed a "Request Quote / Book Testing" lead form (client-side, opens a slide-over — submission is a stub for now unless you want Lovable Cloud email delivery, which we can add later).
+# Radiocom.uz — v2 Upgrade Plan
 
-## Design system (locked)
+Ten coordinated changes across theming, content, routes and i18n. Nothing outside frontend/presentation.
 
-- **Palette**: Pitch Black `#0A0A0A`, Charcoal `#141414`, Panel `#1C1C1C`, Cool Gray `#A8A8A8`, Crisp White `#F5F5F5`, **Signal Red `#E30613`** (matches logo dot) — used ONLY for primary CTAs, hovers, accents. No blue, no gradients.
-- **Type**: `Clash Display` (massive display headers, 8xl–[12rem]) + `Space Grotesk` (UI) + `JetBrains Mono` (specs/technical labels). Extreme scale contrast (12rem headline next to 12px mono caption).
-- **Grid**: 12-col brutalist asymmetric — offset headlines, overlapping panels, hairline dividers, generous negative space. No bento symmetry, no 50/50 splits, no wavy shapes.
-- **Motion**: Framer Motion — staggered word/line reveals on scroll, parallax on hero imagery, magnetic red buttons, horizontal scroll product rails, "radar sweep" loader micro-interaction (concentric red arcs, matching logo).
+## 1. Dark & Light theme
 
-## i18n
+- Refactor `src/styles.css` tokens into `:root` (light) and `.dark` (dark) blocks under `@theme inline`.
+  - Light: bg `#FAFAFA`, panel `#E5E5E5`, text `#0A0A0A`, cool `#6B6B6B`.
+  - Dark: bg `#0A0A0A`, panel `#1C1C1C`, text `#F5F5F5`, cool `#A8A8A8`.
+  - Accent `--signal #E30613` shared.
+- Add `@custom-variant dark (&:where(.dark, .dark *));`.
+- New `ThemeToggle` component (sun/moon Lucide icons) next to `LangToggle` in `Nav`; state persisted in `localStorage("radiocom-theme")`, hydrated in a `useEffect` to avoid SSR mismatch. Default = dark.
+- Sweep components that hardcode `bg-pitch / text-crisp` and switch to semantic tokens (`bg-background`, `text-foreground`, `bg-panel`).
 
-Sleek top-right toggle `RU · UZ · EN` (RU default — the source content is Russian). Implemented with `react-i18next`, JSON dictionaries under `src/i18n/{ru,uz,en}.json`. Instant swap, no reload, persists to localStorage.
+## 2. Mobile responsiveness + animations
 
-## Pages / routes
+- Every grid: `grid-cols-1 md:grid-cols-12` with `min-w-0`, `shrink-0` per responsive-layout guidance.
+- Nav becomes a hamburger drawer (`Sheet`) under `md`, containing links, Industries submenu, socials, theme+lang toggles.
+- Reduce parallax translate range and disable magnetic hover on `(pointer: coarse)` via a `useReducedMotion` + `matchMedia` hook.
+- All CTAs enforce `min-h-12` and 16px+ text.
+- Hero headline scales `text-5xl → md:text-8xl → xl:text-[10rem]`.
 
-```
-/                 Home — immersive sales engine
-/catalog          Multi-brand filterable catalog
-/poc              Advanced Systems (PoC + network design + rental)
-/service          Authorized Service Center
-```
-Each route has its own `head()` with unique title/description/OG.
+## 3. Elevated offers
 
-### 1. Home `/`
+- `StickyLeadNet`: enlarge to 64px, add layered `box-shadow` red glow + slower `animate-ping`; text label hides on mobile leaving a pulsing dot.
+- Hero "Book Free Testing" CTA: `w-full` mobile, glowing `shadow-[0_0_60px_-10px_var(--signal)]` on desktop.
+- Add a red pill "🔥 Trade-In" badge in Nav that anchors to `#tradein` on `/` (or navigates + scrolls if elsewhere).
 
-1. **Hero** — asymmetric. Dark cinematic photo (radio silhouette / operator) with parallax. Massive left-aligned headline **"Unbreakable Communication."** breaking across two lines with a red underscore accent. Mono subline: "11 years · 10,000+ clients · Motorola · Hytera · Radiocom RC." CTAs: solid red **Book Free Testing** (magnetic hover) + ghost outline **Explore Industries**.
-2. **Authority marquee** — infinite ticker: "35 Radio Types • 12-Month Warranty • Authorized Service Center • 10,000+ Clients • Free Nationwide Delivery" — mono type, hairline borders.
-3. **Industry hover grid** — HoReCa / Construction / Security as full-bleed horizontal bands. Hover shifts background image + slides in curated product thumbs on the right. Keyboard accessible.
-4. **Trade-In section** — high-contrast black/red. Split animation: cracked walkie-talkie SVG on the left morphs (spring-scale) into a sleek Motorola on the right when in view. Copy: "Exchange old walkie-talkies. Get a massive discount." CTA: **Start Trade-In**.
-5. **Stats slab** — brutalist counters: `35 / 10K / 11` with mono labels, animated count-up.
-6. **Trust row** — brand wordmarks (Motorola, Hytera, Decross, Baofeng, Alinco, Samcom) on hairline row.
-7. **Footer** (global) — minimalist dark: contacts, address, hours, red logo dot.
+## 4. Industries expansion
 
-### 2. Catalog `/catalog`
+- Add Nav "Industries" dropdown (Radix HoverCard on desktop, accordion in mobile drawer).
+- New route pattern using dynamic segment: `src/routes/industries.$slug.tsx` + `src/routes/industries.index.tsx` (overview grid).
+- Six slugs: `horeca`, `construction`, `security`, `mining`, `transport`, `manufacturing`.
+- Each industry page: cinematic hero image (generated), problem/solution 2-col slab, recommended radios grid (filtered from `products.ts` via a `industries: string[]` tag), stats strip, embedded `LeadFormSheet` trigger "Book Free On-Site Test".
+- Industry copy + hero image prompts stored in `src/data/industries.ts` and localized keys in each i18n file.
 
-- **Sticky left sidebar filters** (desktop) / bottom-sheet (mobile):
-  - Categories: Amateur, Professional, PoC, Accessories, Baby Monitors, PDAs
-  - Brands: Motorola, Hytera, Decross, Baofeng, Alinco, Samcom, Radiocom RC
-  - Features chips: GPS, PoC Network, IP67, Bluetooth
-- **Grid**: architectural cards, no watermarks, benefit tags (`✓ GPS`, `✓ PoC`). Placeholder images generated via `generate_image` per model (transparent PNG on charcoal).
-- **Product detail**: clicking opens a **slide-over side panel** (Radix Sheet) with specs table (mono), gallery, and a **Request Quote** form (name, company, phone, qty, message). No cart, no checkout.
-- Product data lives in `src/data/products.ts` as a typed array — seeded with ~18–24 realistic entries across brands/categories drawn from the uploaded price list.
+## 5. Brands strip with real logos
 
-### 3. Advanced Systems `/poc`
+- Add SVG wordmarks under `src/assets/brands/` (Motorola, Hytera, Decross, Baofeng, Alinco, Samcom) — recreated as clean inline SVG components (avoids trademark image hosting). Radiocom uses existing logo.
+- Replace `TrustRow` with an interactive strip: each logo wrapped in a Framer Motion tile with 3D flip on hover (`rotateY`) revealing product count, and magnetic pull on desktop.
 
-- Hero: "Global Range. Zero Repeaters. Push-to-Talk over Cellular."
-- **PoC vs PMR interactive comparison** — side-by-side animated table; rows reveal on scroll with red check / gray dash; hoverable rows expand a mono explanation.
-- **Network Design & Commissioning** — scroll-triggered editorial section with blueprint SVG overlay + parallax antenna photo. Bullet list of the project workflow (survey → design → docs → frequency licensing → commissioning).
-- **Rental** — "1 day to 5+ years" — big mono duration slider (visual only) with pricing tiers copy.
-- Contact strip with the two PoC phone numbers.
+## 6. Real catalog data
 
-### 4. Service `/service`
+- Rewrite `src/data/products.ts` with the exact list (RC, Motorola Talkabout, Motorola Pro DP/DM, Repeaters SLR, Decross, Hytera, Caltta, Baby Monitors, Accessories, PDA).
+- Schema: `{ id, name, brand, category, price, priceLabel, rangeCity, rangeOpen, features[], industries[], image }`.
+- Prices formatted `2 000 000 сум` (localized: `сум / so'm / UZS`).
+- Categories: `amateur | professional | mobile | repeater | poc | accessory | baby-monitor | pda`.
+- Placeholder product renders generated via `imagegen` (transparent PNG on charcoal) — one per unique model family, reused across variants.
 
-- Editorial hero: high-quality technician-at-workbench photo, red frame accent.
-- **Animated checklist** — Certified Techs / Original Parts / 24/7 Fast Repair / Fixed Pricing — checkmarks stroke-draw on scroll.
-- Process timeline (Diagnostics → Analysis → Testing → Repair) as a horizontal scroll rail.
-- Warranty & return-policy accordion (condensed from the provided legal copy).
-- Service center phone numbers strip.
+## 7. Download Catalog button
 
-## Global elements
+- Upload provided PDF as a Lovable asset (`src/assets/radiocom-catalog.pdf.asset.json`) via the assets CLI from `/mnt/user-uploads/`.
+- Add "Download catalog" button (Lucide `FileDown`) in:
+  - Top Nav (desktop, next to Contact — icon+label; icon-only on tablet).
+  - Catalog sidebar (full-width primary outlined button at top).
+  - Mobile drawer.
+- Downloads via `<a href={catalog.url} download>` with i18n label.
 
-- **Top nav**: left = Radiocom mark (logo asset), center = links (Home / Catalog / PoC / Service / About), right = language toggle + red **Contact** button. Sticky, blurred charcoal on scroll.
-- **Sticky Lead Net**: floating red circular button, bottom-right on every route — opens the same slide-over lead form pre-filled with "Free On-Site Test."
-- **Radar sweep loader**: shown during route transitions & form submits (concentric red arcs sweeping, matching logo iconography).
-- **Footer**: contacts, address (Uzbekiston Ovozi 2, Tashkent), hours, emails, phone numbers, brand row, small legal.
+## 8. Google Maps embed
 
-## Technical notes
+- New `MapEmbed` component wrapping the provided iframe (sanitized, `loading="lazy"`, `referrerpolicy="no-referrer"`, `title` for a11y).
+- Rendered inside `Footer` (full-width band above legal line) and on `/service` (dedicated "Visit us" section with address block + hours next to the map on desktop).
 
-- Stack: TanStack Start (existing), Tailwind v4, Framer Motion, react-i18next, Radix (Sheet, Dialog, Accordion), lucide-react icons.
-- Fonts loaded via `<link>` in `__root.tsx` head (Clash Display via Fontshare, Space Grotesk + JetBrains Mono via Google Fonts).
-- Design tokens added to `src/styles.css` (`--signal`, `--pitch`, `--charcoal`, `--panel`, `--cool`, `--crisp`) with matching Tailwind theme entries.
-- Logo asset uploaded via `lovable-assets` from `/mnt/user-uploads/logo-black.jpg` (used inverted / on-dark).
-- Product/spec imagery generated with `generate_image` (dark studio, red rim light).
-- No backend this pass. Lead-form submissions log to console + show a success state; if you want real email delivery + storage, we can enable Lovable Cloud in a follow-up.
+## 9. Social media
 
-## Out of scope (this pass)
+- New `Socials` component: inline SVGs for Instagram, Facebook, Telegram (Lucide has all three).
+- Links open in new tab with `rel="noopener noreferrer"` and localized `aria-label`s.
+- Placed in `Footer` (right column) and in the mobile Nav drawer footer.
 
-- Real inventory / pricing sync from the PDF (we'll seed representative products; full catalog import can follow).
-- CMS, admin, auth, checkout.
-- Actual email dispatch for lead forms.
+## 10. i18n sweep
 
-Reply **approve** to build, or tell me what to adjust (pages to drop, extra sections, different fonts, backend on/off).
+- Add new keys across `ru/uz/en.json`:
+  - `nav.industries`, `nav.download`, `nav.theme_light`, `nav.theme_dark`, `nav.tradein_badge`.
+  - `industries.overview.*` + per-slug `industries.<slug>.{name,hero,problem,solution,cta}`.
+  - `catalog.download`, `catalog.currency`.
+  - `footer.follow`, `footer.map_title`, socials `aria.*`.
+- No English strings left in component JSX — all text via `t()`.
+
+---
+
+## Technical section
+
+- Theme provider: tiny module `src/lib/theme.ts` toggling `document.documentElement.classList` and writing localStorage; hydrated via `useEffect` (same pattern as `hydrateLanguage`) to keep SSR safe.
+- Route registration: TanStack file-based, use `industries.$slug.tsx` and `industries.index.tsx`; regenerated automatically. `useParams()` untyped-manually.
+- Products dataset stays static; filtering happens client-side by `industries.includes(slug)` and `category`.
+- Brand SVGs are simplified wordmarks; not the trademarked logotypes at full fidelity — this keeps assets in-repo and animatable.
+- Map iframe: escape the embedded HTML and split the `<style>` block into scoped CSS on the component (Tailwind v4 — put shared rule in `styles.css` under `@utility map-embed`).
+- PDF asset served from CDN via `lovable-assets create`; no repo bloat.
+- No backend changes; lead form remains client-only.
+
+## Out of scope
+
+- Real trademarked brand logo files (using clean SVG wordmarks instead).
+- Real product photography (using generated placeholders keyed by model family).
+- Backend email delivery for the lead form (can enable Lovable Cloud later).
+
+Reply **approve** to build, or tell me which items to drop/reorder.

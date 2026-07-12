@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import "../lib/i18n";
 import { hydrateLanguage } from "../lib/i18n";
+import { hydrateTheme } from "../lib/theme";
 import { Nav } from "../components/Nav";
 import { Footer } from "../components/Footer";
 import { StickyLeadNet } from "../components/StickyLeadNet";
@@ -23,7 +24,7 @@ function NotFoundComponent() {
     <div className="flex min-h-screen items-center justify-center bg-pitch px-6">
       <div className="max-w-md">
         <div className="text-mono text-[11px] text-signal mb-6">ERROR · 404</div>
-        <h1 className="text-display text-7xl text-crisp">Signal lost.</h1>
+        <h1 className="text-display text-6xl md:text-7xl text-crisp">Signal lost.</h1>
         <p className="mt-4 text-sm text-cool">The frequency you're tuned to doesn't exist.</p>
         <Link
           to="/"
@@ -91,6 +92,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
       },
     ],
+    scripts: [
+      {
+        children: `try{var t=localStorage.getItem('radiocom-theme');if(t==='light'){document.documentElement.classList.remove('dark');}else{document.documentElement.classList.add('dark');}}catch(e){document.documentElement.classList.add('dark');}`,
+      },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -100,7 +106,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
         <HeadContent />
       </head>
@@ -114,8 +120,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  useEffect(() => { hydrateLanguage(); }, []);
-
+  useEffect(() => { hydrateLanguage(); hydrateTheme(); }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
