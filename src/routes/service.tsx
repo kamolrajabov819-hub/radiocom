@@ -2,11 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ArrowUpRight, Check, Plus, Minus } from "lucide-react";
+import { ArrowUpRight, Check, Plus, Minus, MapPin, Clock } from "lucide-react";
 import techImg from "@/assets/service-tech.jpg";
 import { Reveal, RevealWords } from "@/components/Reveal";
 import { MagneticButton } from "@/components/MagneticButton";
 import { openLead } from "@/components/LeadFormSheet";
+import { MapEmbed } from "@/components/MapEmbed";
 
 export const Route = createFileRoute("/service")({
   head: () => ({
@@ -27,7 +28,39 @@ function ServicePage() {
       <Advantages />
       <Flow />
       <Policy />
+      <Visit />
     </>
+  );
+}
+
+function Visit() {
+  const { t } = useTranslation();
+  return (
+    <section className="border-t hairline px-6 md:px-10 py-24">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
+        <div className="md:col-span-5">
+          <Reveal>
+            <div className="text-mono text-[11px] text-signal mb-6">/ VISIT</div>
+            <h2 className="text-display text-4xl md:text-6xl leading-[0.9]">
+              {t("service.visit_title")}<span className="text-signal">.</span>
+            </h2>
+          </Reveal>
+          <div className="mt-10 space-y-4">
+            <div className="flex items-start gap-4">
+              <MapPin className="w-5 h-5 text-signal mt-0.5 shrink-0" />
+              <p className="text-cool">{t("footer.address")}</p>
+            </div>
+            <div className="flex items-start gap-4">
+              <Clock className="w-5 h-5 text-signal mt-0.5 shrink-0" />
+              <p className="text-cool">{t("footer.hours")}</p>
+            </div>
+          </div>
+        </div>
+        <div className="md:col-span-7">
+          <MapEmbed />
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -53,8 +86,8 @@ function Hero() {
           <Reveal delay={0.6}>
             <p className="mt-12 max-w-lg text-cool text-lg leading-relaxed">{t("service.sub")}</p>
             <div className="mt-10">
-              <MagneticButton onClick={() => openLead({ title: t("service.title_a") + " " + t("service.title_b") })}>
-                Request repair
+              <MagneticButton onClick={() => openLead({ title: t("service.request_repair") })}>
+                {t("service.request_repair")}
                 <ArrowUpRight className="w-4 h-4" />
               </MagneticButton>
             </div>
