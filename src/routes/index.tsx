@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ArrowUpRight, Radio, HardHat, ShieldCheck } from "lucide-react";
+import { ArrowUpRight, Radio, HardHat, ShieldCheck, Users } from "lucide-react";
 import heroImg from "@/assets/hero-radio.jpg";
 import horecaImg from "@/assets/industry-horeca.jpg";
 import constructionImg from "@/assets/industry-construction.jpg";
@@ -43,7 +43,7 @@ function Hero() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.12]);
 
   return (
     <section ref={ref} className="relative min-h-screen overflow-hidden pt-16">
@@ -51,13 +51,24 @@ function Hero() {
         <img
           src={heroImg}
           alt=""
-          className="absolute inset-0 h-full w-full object-cover opacity-70 dark:opacity-70"
+          className="absolute inset-0 h-full w-full object-cover opacity-60 dark:opacity-70"
           width={1600}
           height={1200}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-pitch via-pitch/60 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-pitch via-transparent to-pitch/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-pitch via-pitch/70 to-pitch/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-pitch via-transparent to-pitch/50" />
       </motion.div>
+
+      {/* radio-wave rings behind title */}
+      <div className="absolute top-1/2 -translate-y-1/2 left-4 md:left-10 pointer-events-none hidden sm:block" aria-hidden>
+        {[0, 1, 2].map((i) => (
+          <div
+            key={i}
+            className="absolute w-40 h-40 md:w-64 md:h-64 rounded-full border border-signal/25 wave-ring"
+            style={{ animationDelay: `${i * 1.1}s` }}
+          />
+        ))}
+      </div>
 
       <div className="absolute inset-0 pointer-events-none hidden md:block">
         <div className="absolute inset-y-0 left-[8.33%] w-px bg-crisp/[0.04]" />
@@ -65,26 +76,29 @@ function Hero() {
         <div className="absolute inset-y-0 right-[8.33%] w-px bg-crisp/[0.04]" />
       </div>
 
-      <div className="relative px-6 md:px-10 pt-16 md:pt-32 pb-24 min-h-screen flex flex-col justify-between">
+      <div className="relative px-5 sm:px-6 md:px-10 pt-12 md:pt-32 pb-24 min-h-screen flex flex-col justify-between">
         <div>
           <Reveal delay={0.1}>
             <div className="flex items-center gap-4 mb-8 md:mb-12">
               <span className="h-px w-8 md:w-12 bg-signal" />
-              <span className="text-mono text-[11px] text-cool">{t("hero.eyebrow")}</span>
+              <span className="text-mono text-[10px] md:text-[11px] text-cool tracking-widest">
+                {t("hero.eyebrow")}
+              </span>
             </div>
           </Reveal>
 
-          <h1 className="text-display text-[14vw] md:text-[11vw] leading-[0.85] tracking-tighter">
+          <h1 className="hero-headline max-w-[95%]">
             <span className="block">
               <RevealWords text={t("hero.title_a")} />
             </span>
-            <span className="block pl-[8vw] md:pl-[20vw] relative">
+            <span className="block pl-[6vw] md:pl-[16vw] relative">
               <RevealWords text={t("hero.title_b")} stagger={0.06} />
-              <span className="absolute -bottom-2 md:-bottom-4 left-[8vw] md:left-[20vw] h-1 md:h-2 w-[30vw] bg-signal origin-left scale-x-0 animate-[grow_1s_1.2s_forwards_ease-out]" />
+              <span className="text-signal">.</span>
+              <span className="absolute -bottom-1 md:-bottom-3 left-[6vw] md:left-[16vw] h-1 md:h-1.5 w-[22vw] bg-signal origin-left scale-x-0 animate-[grow_1s_1.2s_forwards_ease-out]" />
             </span>
           </h1>
 
-          <div className="mt-12 md:mt-24 grid grid-cols-12 gap-6">
+          <div className="mt-10 md:mt-24 grid grid-cols-12 gap-4 md:gap-6">
             <div className="col-span-12 md:col-span-6 md:col-start-6">
               <Reveal delay={0.6}>
                 <p className="text-cool text-base md:text-xl leading-relaxed">{t("hero.sub")}</p>
@@ -98,14 +112,19 @@ function Hero() {
                     {t("hero.cta_primary")}
                     <ArrowUpRight className="w-4 h-4" />
                   </button>
-                  <MagneticButton
-                    variant="ghost"
-                    onClick={() =>
-                      document.getElementById("industries")?.scrollIntoView({ behavior: "smooth" })
-                    }
+                  <Link
+                    to="/catalog"
+                    className="w-full sm:w-auto text-mono text-[12px] border border-crisp/25 text-crisp px-6 md:px-8 py-4 md:py-5 hover:border-signal hover:text-signal transition-colors flex items-center justify-center gap-3 min-h-14"
                   >
                     {t("hero.cta_secondary")}
-                  </MagneticButton>
+                    <ArrowUpRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </Reveal>
+              <Reveal delay={1}>
+                <div className="mt-6 flex items-center gap-2 text-mono text-[10px] text-cool">
+                  <Users className="w-3.5 h-3.5 text-signal" />
+                  <span>{t("hero.social_proof")}</span>
                 </div>
               </Reveal>
             </div>
@@ -115,7 +134,7 @@ function Hero() {
         <Reveal delay={1}>
           <div className="flex items-end justify-between mt-12">
             <div className="text-mono text-[10px] text-cool">[ 01 ] · TASHKENT · UZ</div>
-            <div className="text-mono text-[10px] text-cool hidden md:block">SCROLL ↓</div>
+            <div className="text-mono text-[10px] text-cool hidden md:block">{t("hero.scroll")} ↓</div>
           </div>
         </Reveal>
       </div>
@@ -130,7 +149,7 @@ function Marquee() {
   const items = t("marquee", { returnObjects: true }) as string[];
   const all = [...items, ...items, ...items];
   return (
-    <section className="border-y hairline overflow-hidden py-6 bg-charcoal">
+    <section className="border-y hairline overflow-hidden py-6 bg-charcoal mask-fade-x">
       <div className="marquee-track flex gap-16 whitespace-nowrap">
         {all.map((s, i) => (
           <div key={i} className="flex items-center gap-16 text-mono text-sm text-crisp">
@@ -197,7 +216,7 @@ function Industries() {
                 <div className="col-span-2 md:col-span-1 text-mono text-[11px] text-cool">0{i + 1}</div>
                 <div className="col-span-10 md:col-span-4 flex items-center gap-4 md:gap-6 min-w-0">
                   <r.Icon className={`w-5 h-5 md:w-6 md:h-6 shrink-0 transition-colors ${hover === i ? "text-signal" : "text-cool"}`} />
-                  <h3 className="text-display text-3xl md:text-6xl transition-transform group-hover:translate-x-3 truncate">
+                  <h3 className="text-display text-2xl sm:text-3xl md:text-6xl transition-transform group-hover:translate-x-3 break-words min-w-0">
                     {name}
                   </h3>
                 </div>

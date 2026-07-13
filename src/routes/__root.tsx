@@ -18,6 +18,8 @@ import { Nav } from "../components/Nav";
 import { Footer } from "../components/Footer";
 import { StickyLeadNet } from "../components/StickyLeadNet";
 import { LeadFormSheet } from "../components/LeadFormSheet";
+import { ScrollProgress } from "../components/ScrollProgress";
+import { StickyBottomCta } from "../components/StickyBottomCta";
 
 function NotFoundComponent() {
   return (
@@ -125,12 +127,14 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <div className="min-h-screen bg-pitch text-crisp">
+        <ScrollProgress />
         <Nav />
         <main>
           <Outlet />
         </main>
         <Footer />
         <StickyLeadNet />
+        <StickyBottomCta />
         <LeadFormSheet />
       </div>
     </QueryClientProvider>

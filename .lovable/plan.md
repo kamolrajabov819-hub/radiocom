@@ -1,98 +1,75 @@
+# v3 Polish & Conversion Pass
 
-# Radiocom.uz — v2 Upgrade Plan
+Focused on the 8 issues you raised. No backend changes.
 
-Ten coordinated changes across theming, content, routes and i18n. Nothing outside frontend/presentation.
+## 1. Light theme rebuild
+- Retune tokens in `src/styles.css`: warmer paper background `oklch(0.97 0.005 60)`, soft charcoal text, subtle warm shadow layer, and a dedicated `--photo-frame` overlay so product photos never sit on flat white.
+- Wrap every `<img>` in hero / brand / industry / product cards with a `photo-frame` utility that adds a soft radial vignette + grain + hairline border in light mode (dark mode: no-op). This fixes the "washed-out photos" complaint without regenerating assets.
+- Add `img.light-invert-safe` — a mix-blend-multiply layer over pure-white product backgrounds so they blend into the paper tone.
+- Fix light-mode contrast on Nav, LeadFormSheet, filters, footer socials (currently rely on `text-crisp/60` which is too light on paper).
 
-## 1. Dark & Light theme
+## 2. Industries home — full readable names
+- `src/routes/industries.index.tsx`: the card title (`text-5xl md:text-5xl`) truncates long localized names like "Производство". Change to responsive clamp typography, `break-words`, `hyphens-auto`, and drop to `text-3xl` on mobile / `text-4xl` md / `text-5xl` xl. Remove aspect-ratio lock in favor of min-height so tall names never clip.
 
-- Refactor `src/styles.css` tokens into `:root` (light) and `.dark` (dark) blocks under `@theme inline`.
-  - Light: bg `#FAFAFA`, panel `#E5E5E5`, text `#0A0A0A`, cool `#6B6B6B`.
-  - Dark: bg `#0A0A0A`, panel `#1C1C1C`, text `#F5F5F5`, cool `#A8A8A8`.
-  - Accent `--signal #E30613` shared.
-- Add `@custom-variant dark (&:where(.dark, .dark *));`.
-- New `ThemeToggle` component (sun/moon Lucide icons) next to `LangToggle` in `Nav`; state persisted in `localStorage("radiocom-theme")`, hydrated in a `useEffect` to avoid SSR mismatch. Default = dark.
-- Sweep components that hardcode `bg-pitch / text-crisp` and switch to semantic tokens (`bg-background`, `text-foreground`, `bg-panel`).
+## 3. Industry detail page — sell harder
+Rebuild `src/routes/industries.$slug.tsx` into a full sales page:
+1. Hero (existing) + animated stat strip: "10,000+ deployed · 11 years · <industry> teams trust us".
+2. NEW "Pain grid" — 3 pains specific to that industry (localized), each with icon + red underline reveal on scroll.
+3. Existing Problem/Solution split kept but with parallax image band between them.
+4. NEW "Outcome metrics" band — 3 big numbers (e.g. `-40% radio downtime`, `<24h deployment`, `3-year warranty`) with count-up animation.
+5. Recommended radios (existing) + "Compare all" link into catalog pre-filtered by industry tag.
+6. NEW testimonial quote card per industry (localized, 1 quote each).
+7. NEW dual CTA: "Book free 7-day test" (primary) + "Download catalog PDF" (secondary), sticky on mobile.
+8. FAQ accordion (3 questions per industry, localized).
 
-## 2. Mobile responsiveness + animations
+All copy added to `ru/uz/en.json` under `industries.<slug>.{pains,outcomes,quote,faq}`.
 
-- Every grid: `grid-cols-1 md:grid-cols-12` with `min-w-0`, `shrink-0` per responsive-layout guidance.
-- Nav becomes a hamburger drawer (`Sheet`) under `md`, containing links, Industries submenu, socials, theme+lang toggles.
-- Reduce parallax translate range and disable magnetic hover on `(pointer: coarse)` via a `useReducedMotion` + `matchMedia` hook.
-- All CTAs enforce `min-h-12` and 16px+ text.
-- Hero headline scales `text-5xl → md:text-8xl → xl:text-[10rem]`.
+## 4. Mobile catalog filters
+`src/routes/catalog.tsx` currently renders the full sidebar inline on mobile. Rebuild:
+- Sticky top filter bar on mobile: brand chip · category chip · price chip · "Filters" button.
+- Tapping a chip opens a compact bottom sheet (Framer Motion `AnimatePresence`, drag-to-dismiss) with only that facet.
+- "Filters" button opens full sheet with all facets + active-count badge and "Reset / Apply" footer.
+- Desktop sidebar unchanged.
+- Add horizontal scrollable "quick filter" chips row (Waterproof, Digital, Long-range, Under 2M сум) for one-tap conversion.
 
-## 3. Elevated offers
+## 5. Hero headline overflow (RU / UZ / EN)
+Root cause: `text-[10vw]` + long words like "communications" / "Небьющаяся связь" / "Buzilmas aloqa" overflow the viewport on narrow screens.
+- Replace with `clamp(2.75rem, 9vw, 9rem)` and `hyphens: auto; word-break: break-word; overflow-wrap: anywhere` on hero headline only.
+- Shorten localized headlines to two-line editorial pattern (line 1 short, line 2 long), same in all three JSONs, with an explicit `<br/>` split key `hero.title_line1` / `hero.title_line2`.
+- Verify at 360 / 390 / 414 / 768 widths via Playwright screenshot after build.
 
-- `StickyLeadNet`: enlarge to 64px, add layered `box-shadow` red glow + slower `animate-ping`; text label hides on mobile leaving a pulsing dot.
-- Hero "Book Free Testing" CTA: `w-full` mobile, glowing `shadow-[0_0_60px_-10px_var(--signal)]` on desktop.
-- Add a red pill "🔥 Trade-In" badge in Nav that anchors to `#tradein` on `/` (or navigates + scrolls if elsewhere).
+## 6. Design + animation elevation
+- Global scroll progress bar (thin signal-red line at top).
+- Hero: add slow parallax on hero radio image + animated SVG radio-wave rings behind the headline.
+- Sectional scroll-linked reveals using `useScroll` + `useTransform` (image scales from 1.15 → 1.0, text slides up).
+- Marquee brand strip: add mask-image fade edges and pause-on-hover.
+- Magnetic buttons: increase pull radius + add subtle red halo trail.
+- Page transitions: fade + 12px slide via `AnimatePresence` in `__root.tsx` outlet.
+- Cursor-follow radar dot on desktop only (respects `prefers-reduced-motion`).
 
-## 4. Industries expansion
+## 7. Conversion pressure
+- Above-the-fold on Home: add small "247 free tests booked this year" live-feel counter under CTA.
+- Add a "Sticky bottom bar" on mobile Home + Catalog: "Free 7-day test · Book now →".
+- Catalog cards: "Request price" button visible without hover on mobile; add "In stock in Tashkent" green dot on ~70% of items.
+- Lead form: reduce to 3 fields (name, phone, product) + trust line "We reply in 15 min, Mon–Sat 9–18".
+- Add exit-intent trigger (desktop only) opening LeadFormSheet with "Wait — get free test unit" offer, once per session.
+- Home reorders: Hero → Sticky CTA visible → Brands → Trade-in offer → Industries → Featured catalog (6 items) → Testimonials → Final CTA. Featured catalog block is new and links straight into `/catalog`.
 
-- Add Nav "Industries" dropdown (Radix HoverCard on desktop, accordion in mobile drawer).
-- New route pattern using dynamic segment: `src/routes/industries.$slug.tsx` + `src/routes/industries.index.tsx` (overview grid).
-- Six slugs: `horeca`, `construction`, `security`, `mining`, `transport`, `manufacturing`.
-- Each industry page: cinematic hero image (generated), problem/solution 2-col slab, recommended radios grid (filtered from `products.ts` via a `industries: string[]` tag), stats strip, embedded `LeadFormSheet` trigger "Book Free On-Site Test".
-- Industry copy + hero image prompts stored in `src/data/industries.ts` and localized keys in each i18n file.
+## 8. Localization
+Every new string keyed and added to `src/i18n/{ru,en,uz}.json`:
+- `industries.<slug>.pains[]`, `.outcomes[]`, `.quote`, `.quote_author`, `.faq[]`
+- `hero.title_line1`, `hero.title_line2`, `hero.social_proof`
+- `catalog.filters.open`, `.reset`, `.apply`, `.active`, `.quick.*`
+- `home.sticky_cta`, `home.testimonials.*`, `home.featured_title`
+- `lead.trust_line`, `lead.exit_intent_title`
 
-## 5. Brands strip with real logos
-
-- Add SVG wordmarks under `src/assets/brands/` (Motorola, Hytera, Decross, Baofeng, Alinco, Samcom) — recreated as clean inline SVG components (avoids trademark image hosting). Radiocom uses existing logo.
-- Replace `TrustRow` with an interactive strip: each logo wrapped in a Framer Motion tile with 3D flip on hover (`rotateY`) revealing product count, and magnetic pull on desktop.
-
-## 6. Real catalog data
-
-- Rewrite `src/data/products.ts` with the exact list (RC, Motorola Talkabout, Motorola Pro DP/DM, Repeaters SLR, Decross, Hytera, Caltta, Baby Monitors, Accessories, PDA).
-- Schema: `{ id, name, brand, category, price, priceLabel, rangeCity, rangeOpen, features[], industries[], image }`.
-- Prices formatted `2 000 000 сум` (localized: `сум / so'm / UZS`).
-- Categories: `amateur | professional | mobile | repeater | poc | accessory | baby-monitor | pda`.
-- Placeholder product renders generated via `imagegen` (transparent PNG on charcoal) — one per unique model family, reused across variants.
-
-## 7. Download Catalog button
-
-- Upload provided PDF as a Lovable asset (`src/assets/radiocom-catalog.pdf.asset.json`) via the assets CLI from `/mnt/user-uploads/`.
-- Add "Download catalog" button (Lucide `FileDown`) in:
-  - Top Nav (desktop, next to Contact — icon+label; icon-only on tablet).
-  - Catalog sidebar (full-width primary outlined button at top).
-  - Mobile drawer.
-- Downloads via `<a href={catalog.url} download>` with i18n label.
-
-## 8. Google Maps embed
-
-- New `MapEmbed` component wrapping the provided iframe (sanitized, `loading="lazy"`, `referrerpolicy="no-referrer"`, `title` for a11y).
-- Rendered inside `Footer` (full-width band above legal line) and on `/service` (dedicated "Visit us" section with address block + hours next to the map on desktop).
-
-## 9. Social media
-
-- New `Socials` component: inline SVGs for Instagram, Facebook, Telegram (Lucide has all three).
-- Links open in new tab with `rel="noopener noreferrer"` and localized `aria-label`s.
-- Placed in `Footer` (right column) and in the mobile Nav drawer footer.
-
-## 10. i18n sweep
-
-- Add new keys across `ru/uz/en.json`:
-  - `nav.industries`, `nav.download`, `nav.theme_light`, `nav.theme_dark`, `nav.tradein_badge`.
-  - `industries.overview.*` + per-slug `industries.<slug>.{name,hero,problem,solution,cta}`.
-  - `catalog.download`, `catalog.currency`.
-  - `footer.follow`, `footer.map_title`, socials `aria.*`.
-- No English strings left in component JSX — all text via `t()`.
-
----
-
-## Technical section
-
-- Theme provider: tiny module `src/lib/theme.ts` toggling `document.documentElement.classList` and writing localStorage; hydrated via `useEffect` (same pattern as `hydrateLanguage`) to keep SSR safe.
-- Route registration: TanStack file-based, use `industries.$slug.tsx` and `industries.index.tsx`; regenerated automatically. `useParams()` untyped-manually.
-- Products dataset stays static; filtering happens client-side by `industries.includes(slug)` and `category`.
-- Brand SVGs are simplified wordmarks; not the trademarked logotypes at full fidelity — this keeps assets in-repo and animatable.
-- Map iframe: escape the embedded HTML and split the `<style>` block into scoped CSS on the component (Tailwind v4 — put shared rule in `styles.css` under `@utility map-embed`).
-- PDF asset served from CDN via `lovable-assets create`; no repo bloat.
-- No backend changes; lead form remains client-only.
+## Technical notes
+- No new deps.
+- Framer Motion `useScroll`/`useTransform` for parallax + count-up.
+- Playwright headless verification at 375px and 1280px after build; screenshot hero, industries index, industry detail, catalog mobile filters.
+- Light-mode QA pass on every route.
 
 ## Out of scope
-
-- Real trademarked brand logo files (using clean SVG wordmarks instead).
-- Real product photography (using generated placeholders keyed by model family).
-- Backend email delivery for the lead form (can enable Lovable Cloud later).
-
-Reply **approve** to build, or tell me which items to drop/reorder.
+- No new product data.
+- No backend / auth / schema changes.
+- No new page routes beyond what exists.

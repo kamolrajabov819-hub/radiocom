@@ -35,7 +35,7 @@ function IndustriesOverview() {
     <>
       <section className="pt-32 md:pt-40 px-6 md:px-10 pb-16">
         <Reveal><div className="text-mono text-[11px] text-signal mb-6">/ INDUSTRIES</div></Reveal>
-        <h1 className="text-display text-6xl md:text-[10vw] leading-[0.9]">
+        <h1 className="text-display leading-[0.9]" style={{ fontSize: "clamp(3rem, 10vw, 9rem)" }}>
           <RevealWords text={t("industries.title")} />
           <span className="text-signal">.</span>
         </h1>
@@ -44,7 +44,7 @@ function IndustriesOverview() {
         </Reveal>
       </section>
 
-      <section className="border-t hairline grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-crisp/10">
+      <section className="border-t hairline grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-crisp/10">
         {INDUSTRY_SLUGS.map((s, i) => (
           <motion.div
             key={s}
@@ -56,16 +56,26 @@ function IndustriesOverview() {
             <Link
               to="/industries/$slug"
               params={{ slug: s }}
-              className="relative block overflow-hidden bg-charcoal aspect-[4/5] group"
+              className="relative block overflow-hidden bg-charcoal min-h-[380px] sm:min-h-[440px] group"
             >
-              <img src={IMAGES[s]} alt="" className="absolute inset-0 h-full w-full object-cover opacity-40 group-hover:opacity-60 group-hover:scale-105 transition-all duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-pitch via-pitch/40 to-transparent" />
-              <div className="relative h-full flex flex-col justify-between p-8">
+              <img src={IMAGES[s]} alt="" className="absolute inset-0 h-full w-full object-cover opacity-40 group-hover:opacity-70 group-hover:scale-105 transition-all duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-pitch via-pitch/60 to-transparent" />
+              <div className="relative h-full min-h-[380px] sm:min-h-[440px] flex flex-col justify-between p-6 md:p-8">
                 <div className="text-mono text-[11px] text-cool">0{i + 1}</div>
                 <div>
-                  <h2 className="text-display text-4xl md:text-5xl text-crisp mb-4 group-hover:text-signal transition-colors">
+                  <h2
+                    className="text-display text-crisp mb-4 group-hover:text-signal transition-colors break-words hyphens-auto leading-[0.95]"
+                    style={{
+                      fontSize: "clamp(1.75rem, 5.5vw, 3rem)",
+                      hyphens: "auto",
+                      overflowWrap: "anywhere",
+                    }}
+                  >
                     {t(`industries.${s}.name`)}
                   </h2>
+                  <p className="text-cool text-sm max-w-xs mb-5 line-clamp-2">
+                    {t(`industries.${s}.desc`)}
+                  </p>
                   <div className="flex items-center gap-2 text-mono text-[11px] text-signal">
                     {t("industries.cta")} <ArrowUpRight className="w-3 h-3" />
                   </div>
