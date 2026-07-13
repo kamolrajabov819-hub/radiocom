@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight, Check, X, FileDown } from "lucide-react";
+import { ArrowUpRight, Check, X, FileDown, SlidersHorizontal } from "lucide-react";
 import { products, categoryLabels, allBrands, formatPrice, type Brand, type Category, type Product } from "@/data/products";
 import { openLead } from "@/components/LeadFormSheet";
 import { Reveal, RevealWords } from "@/components/Reveal";
@@ -29,6 +29,7 @@ function CatalogPage() {
   const [brand, setBrand] = useState<Brand | null>(null);
   const [features, setFeatures] = useState<string[]>([]);
   const [selected, setSelected] = useState<Product | null>(null);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   const filtered = useMemo(() => {
     return products.filter((p) => {
@@ -44,26 +45,97 @@ function CatalogPage() {
 
   const clear = () => { setCat(null); setBrand(null); setFeatures([]); };
 
+  const activeCount = (cat ? 1 : 0) + (brand ? 1 : 0) + features.length;
+
+  const filtersUi = (
+    <>
+      <FilterGroup title={t("catalog.categories")}>
+        {(Object.keys(categoryLabels) as Category[]).map((c) => (
+          <FilterRow key={c} active={cat === c} onClick={() => setCat(cat === c ? null : c)}>
+            {categoryLabels[c][lang]}
+          </FilterRow>
+        ))}
+      </FilterGroup>
+
+      <FilterGroup title={t("catalog.brands")}>
+        {allBrands.map((b) => (
+          <FilterRow key={b} active={brand === b} onClick={() => setBrand(brand === b ? null : b)}>
+            {b}
+          </FilterRow>
+        ))}
+      </FilterGroup>
+
+      <FilterGroup title={t("catalog.features")}>
+        <div className="flex flex-wrap gap-2">
+          {featureChips.map((f) => {
+            const on = features.includes(f);
+            return (
+              <button
+                key={f}
+                onClick={() => toggleFeature(f)}
+                className={`text-mono text-[10px] px-3 py-1.5 border transition-colors ${
+                  on ? "bg-signal border-signal text-crisp" : "border-crisp/20 text-cool hover:text-crisp hover:border-crisp/50"
+                }`}
+              >
+                ✓ {f}
+              </button>
+            );
+          })}
+        </div>
+      </FilterGroup>
+    </>
+  );
+
   return (
     <>
-      <section className="pt-32 md:pt-40 px-6 md:px-10 pb-16">
+      <section className="pt-32 md:pt-40 px-5 sm:px-6 md:px-10 pb-12 md:pb-16">
         <Reveal>
           <div className="text-mono text-[11px] text-signal mb-6">/ CATALOG</div>
         </Reveal>
-        <h1 className="text-display text-6xl md:text-[11vw] leading-[0.9]">
+        <h1 className="hero-headline">
           <RevealWords text={t("catalog.title_a")} />
           <span className="block text-signal">
             <RevealWords text={t("catalog.title_b")} />
           </span>
         </h1>
         <Reveal delay={0.4}>
-          <p className="mt-10 max-w-2xl text-cool text-lg leading-relaxed">{t("catalog.sub")}</p>
+          <p className="mt-8 md:mt-10 max-w-2xl text-cool text-base md:text-lg leading-relaxed">{t("catalog.sub")}</p>
         </Reveal>
       </section>
 
-      <section className="border-t hairline px-6 md:px-10 py-10 grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12">
-        <aside className="md:col-span-3 lg:col-span-3">
-          <div className="md:sticky md:top-24 space-y-8">
+      {/* MOBILE sticky filter bar */}
+      <div className="md:hidden sticky top-16 z-30 bg-pitch/95 backdrop-blur-md border-y hairline">
+        <div className="flex items-stretch">
+          <button
+            onClick={() => setMobileFiltersOpen(true)}
+            className="flex-1 flex items-center justify-center gap-2 py-3 text-mono text-[11px] text-crisp hover:text-signal"
+          >
+            <SlidersHorizontal className="w-3.5 h-3.5" />
+            {t("catalog.open_filters")}
+            {activeCount > 0 && (
+              <span className="ml-1 inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-signal text-crisp text-[10px]">
+                {activeCount}
+              </span>
+            )}
+          </button>
+          <a
+            href={catalogAsset.url}
+            download="radiocom-catalog.pdf"
+            className="flex items-center gap-1.5 border-l hairline px-4 text-mono text-[11px] text-signal"
+          >
+            <FileDown className="w-3.5 h-3.5" />
+            PDF
+          </a>
+          <div className="flex items-center px-4 border-l hairline text-mono text-[10px] text-cool whitespace-nowrap">
+            {filtered.length.toString().padStart(2, "0")} {t("catalog.results")}
+          </div>
+        </div>
+      </div>
+
+      <section className="px-5 sm:px-6 md:px-10 py-8 md:py-10 grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12">
+        {/* DESKTOP sidebar */}
+        <aside className="hidden md:block md:col-span-3">
+          <div className="sticky top-24 space-y-8">
             <a
               href={catalogAsset.url}
               download="radiocom-catalog.pdf"
@@ -80,40 +152,7 @@ function CatalogPage() {
               </button>
             </div>
 
-            <FilterGroup title={t("catalog.categories")}>
-              {(Object.keys(categoryLabels) as Category[]).map((c) => (
-                <FilterRow key={c} active={cat === c} onClick={() => setCat(cat === c ? null : c)}>
-                  {categoryLabels[c][lang]}
-                </FilterRow>
-              ))}
-            </FilterGroup>
-
-            <FilterGroup title={t("catalog.brands")}>
-              {allBrands.map((b) => (
-                <FilterRow key={b} active={brand === b} onClick={() => setBrand(brand === b ? null : b)}>
-                  {b}
-                </FilterRow>
-              ))}
-            </FilterGroup>
-
-            <FilterGroup title={t("catalog.features")}>
-              <div className="flex flex-wrap gap-2">
-                {featureChips.map((f) => {
-                  const on = features.includes(f);
-                  return (
-                    <button
-                      key={f}
-                      onClick={() => toggleFeature(f)}
-                      className={`text-mono text-[10px] px-3 py-1.5 border transition-colors ${
-                        on ? "bg-signal border-signal text-crisp" : "border-crisp/20 text-cool hover:text-crisp hover:border-crisp/50"
-                      }`}
-                    >
-                      ✓ {f}
-                    </button>
-                  );
-                })}
-              </div>
-            </FilterGroup>
+            {filtersUi}
 
             <div className="text-mono text-[10px] text-cool pt-4 border-t hairline">
               {filtered.length.toString().padStart(2, "0")} {t("catalog.results")}
@@ -121,7 +160,7 @@ function CatalogPage() {
           </div>
         </aside>
 
-        <div className="md:col-span-9 lg:col-span-9">
+        <div className="md:col-span-9">
           {filtered.length === 0 ? (
             <div className="py-32 text-center text-cool text-mono text-sm">{t("catalog.empty")}</div>
           ) : (
@@ -133,6 +172,64 @@ function CatalogPage() {
           )}
         </div>
       </section>
+
+      {/* MOBILE filter bottom sheet */}
+      <AnimatePresence>
+        {mobileFiltersOpen && (
+          <motion.div
+            className="fixed inset-0 z-[80] md:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <div className="absolute inset-0 bg-pitch/80 backdrop-blur-sm" onClick={() => setMobileFiltersOpen(false)} />
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ ease: [0.22, 1, 0.36, 1], duration: 0.4 }}
+              drag="y"
+              dragConstraints={{ top: 0, bottom: 0 }}
+              dragElastic={{ top: 0, bottom: 0.4 }}
+              onDragEnd={(_, info) => {
+                if (info.offset.y > 120) setMobileFiltersOpen(false);
+              }}
+              className="absolute bottom-0 left-0 right-0 max-h-[85vh] bg-charcoal border-t hairline rounded-t-2xl flex flex-col"
+            >
+              <div className="pt-3 pb-1 flex justify-center touch-none">
+                <div className="h-1 w-10 rounded-full bg-crisp/25" />
+              </div>
+              <div className="flex items-center justify-between px-5 py-3 border-b hairline">
+                <div className="text-display text-xl">{t("catalog.filters")}</div>
+                <div className="flex items-center gap-3">
+                  <button onClick={clear} className="text-mono text-[11px] text-signal">
+                    {t("catalog.clear")}
+                  </button>
+                  <button
+                    onClick={() => setMobileFiltersOpen(false)}
+                    className="h-8 w-8 flex items-center justify-center border hairline text-cool"
+                    aria-label={t("nav.close")}
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+              <div className="overflow-y-auto flex-1 px-5 py-6 space-y-8 pb-4">
+                {filtersUi}
+              </div>
+              <div className="border-t hairline p-4 bg-charcoal">
+                <button
+                  onClick={() => setMobileFiltersOpen(false)}
+                  className="w-full bg-signal text-crisp text-mono text-[12px] py-4 flex items-center justify-center gap-3 hover:bg-signal/90 min-h-12"
+                >
+                  {t("catalog.apply", { n: filtered.length })}
+                  <ArrowUpRight className="w-4 h-4" />
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <ProductPanel product={selected} lang={lang} onClose={() => setSelected(null)} />
     </>
@@ -152,12 +249,12 @@ function FilterRow({ active, onClick, children }: { active: boolean; onClick: ()
   return (
     <button
       onClick={onClick}
-      className={`w-full text-left text-sm py-1.5 flex items-center justify-between group transition-colors min-h-8 ${
+      className={`w-full text-left text-sm py-2 flex items-center justify-between group transition-colors min-h-9 ${
         active ? "text-signal" : "text-crisp/80 hover:text-crisp"
       }`}
     >
       <span>{children}</span>
-      <span className={`h-1 w-1 rounded-full transition-colors ${active ? "bg-signal" : "bg-transparent group-hover:bg-cool"}`} />
+      <span className={`h-1.5 w-1.5 rounded-full transition-colors ${active ? "bg-signal" : "bg-transparent group-hover:bg-cool"}`} />
     </button>
   );
 }
@@ -165,6 +262,9 @@ function FilterRow({ active, onClick, children }: { active: boolean; onClick: ()
 export function ProductCard({
   p, lang, idx, onOpen,
 }: { p: Product; lang: "ru" | "en" | "uz"; idx: number; onOpen: () => void }) {
+  const { t } = useTranslation();
+  // deterministic "in stock" flag from id hash
+  const inStock = (p.id.charCodeAt(0) + p.id.length) % 10 < 7;
   return (
     <motion.button
       onClick={onOpen}
@@ -180,23 +280,29 @@ export function ProductCard({
           <div className="text-mono text-[10px] text-cool group-hover:text-crisp">{p.brand}</div>
           <ArrowUpRight className="w-4 h-4 text-cool group-hover:text-crisp -rotate-45 group-hover:rotate-0 transition-transform" />
         </div>
-        <div className="aspect-[4/5] flex items-center justify-center mb-4 overflow-hidden">
+        <div className="photo-frame aspect-[4/5] flex items-center justify-center mb-4 overflow-hidden">
           <img
             src={p.image}
             alt={p.name}
-            className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-700"
+            className="photo-multiply max-h-full max-w-full object-contain group-hover:scale-105"
             loading="lazy"
           />
         </div>
         <h3 className="text-display text-xl md:text-2xl leading-tight mb-2 group-hover:text-crisp">
           {p.name}
         </h3>
-        <div className="text-mono text-[10px] text-cool group-hover:text-crisp/80 mb-3">
+        <div className="text-mono text-[10px] text-cool group-hover:text-crisp/80 mb-2">
           {categoryLabels[p.category][lang]}
         </div>
         <div className="text-display text-xl text-signal group-hover:text-crisp mb-3">
           {formatPrice(p.price, lang)}
         </div>
+        {inStock && (
+          <div className="flex items-center gap-1.5 text-mono text-[9px] text-emerald-400 group-hover:text-crisp mb-3">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 group-hover:bg-crisp animate-pulse" />
+            {t("catalog.in_stock")}
+          </div>
+        )}
         <div className="flex flex-wrap gap-1.5">
           {p.tags.slice(0, 3).map((tg) => (
             <span key={tg} className="text-mono text-[9px] px-2 py-1 border border-crisp/15 group-hover:border-crisp/40">
@@ -230,17 +336,17 @@ function ProductPanel({
             exit={{ x: "100%" }}
             transition={{ ease: [0.22, 1, 0.36, 1], duration: 0.5 }}
           >
-            <div className="p-8 md:p-12">
+            <div className="p-6 sm:p-8 md:p-12">
               <div className="flex items-start justify-between mb-8">
                 <div className="text-mono text-[11px] text-signal">{product.brand}</div>
-                <button onClick={onClose} className="text-cool hover:text-signal">
+                <button onClick={onClose} className="text-cool hover:text-signal" aria-label={t("nav.close")}>
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              <div className="aspect-[4/3] bg-pitch flex items-center justify-center mb-8">
-                <img src={product.image} alt={product.name} className="max-h-full max-w-full object-contain" />
+              <div className="photo-frame aspect-[4/3] bg-pitch flex items-center justify-center mb-8">
+                <img src={product.image} alt={product.name} className="photo-multiply max-h-full max-w-full object-contain" />
               </div>
-              <h2 className="text-display text-4xl md:text-5xl leading-tight mb-3">{product.name}</h2>
+              <h2 className="text-display text-3xl sm:text-4xl md:text-5xl leading-tight mb-3">{product.name}</h2>
               <div className="text-mono text-[11px] text-cool mb-4">{categoryLabels[product.category][lang]}</div>
               <div className="text-display text-3xl text-signal mb-6">{formatPrice(product.price, lang)}</div>
               <p className="text-cool leading-relaxed mb-8">{product.blurb}</p>
@@ -269,6 +375,9 @@ function ProductPanel({
               >
                 {t("product.cta")} <ArrowUpRight className="w-4 h-4" />
               </button>
+              <div className="mt-3 text-center text-mono text-[10px] text-cool">
+                {t("form.trust_line")}
+              </div>
             </div>
           </motion.aside>
         </motion.div>

@@ -16,19 +16,14 @@
   "hero": {
     "eyebrow": "Authorized distributor · Tashkent",
     "title_a": "Unbreakable",
-    "title_b": "communication.",
+    "title_b": "comms",
     "sub": "11 years on the market. 10,000+ clients. The official hub for Motorola, Hytera and Radiocom RC in Uzbekistan.",
-    "cta_primary": "Book free testing",
-    "cta_secondary": "Explore industries"
+    "cta_primary": "Free 7-day test",
+    "cta_secondary": "Explore catalog",
+    "social_proof": "247 free tests booked this year",
+    "scroll": "Scroll"
   },
-  "marquee": [
-    "35 radio types",
-    "12-month warranty",
-    "Authorized service center",
-    "10,000+ clients",
-    "Free nationwide delivery",
-    "Trade-in program"
-  ],
+  "marquee": ["35 radio types", "12-month warranty", "Authorized service center", "10,000+ clients", "Free nationwide delivery", "Trade-in program"],
   "industries": {
     "title": "Industries",
     "kicker": "Turnkey solutions",
@@ -37,13 +32,160 @@
     "problem_title": "The problem",
     "solution_title": "Our solution",
     "recommended": "Recommended models",
+    "outcomes_title": "What you get",
+    "pains_title": "Sound familiar?",
+    "faq_title": "Frequently asked",
+    "quote_kicker": "Client story",
     "cta": "Book free on-site test",
-    "horeca":        { "name": "HoReCa",             "desc": "Hotels, restaurants, events. Discreet earpieces, clean channels.", "problem": "Staff loses contact across noisy floors and between levels. Guests overhear crew chatter.", "solution": "Compact PMR radios plus discreet earpieces. Instant coordination — no noise, no license required." },
-    "construction":  { "name": "Construction",       "desc": "Massive sites. IP67 ruggedness, long-range coverage.",             "problem": "Dust, vibration, kilometers between crews. Regular phones don't survive and don't cover the site.", "solution": "Rugged DMR radios with IP67/IP68 protection and repeaters for full site coverage." },
-    "security":      { "name": "Security",           "desc": "Private security, facility protection, government.",              "problem": "You need encrypted comms with GPS shift tracking and a panic button.", "solution": "DMR radios with encryption, emergency button and GPS positioning. Everything visible to the dispatcher." },
-    "mining":        { "name": "Mining, Oil & Gas",  "desc": "Open pits, mines, oil-and-gas infrastructure.",                    "problem": "Huge areas, hazardous zones, strict intrinsic-safety requirements.", "solution": "ATEX-compatible DP4800/DP4600 radios with SLR8000 repeaters. Full pit coverage plus dispatcher link." },
-    "transport":     { "name": "Transport & Logistics", "desc": "Fleets, warehouses, expeditions.",                              "problem": "The dispatcher loses drivers outside the city. Cellular is expensive and drops.", "solution": "PoC radios (Caltta E690) with nationwide LTE coverage plus in-vehicle DM4600 base stations." },
-    "manufacturing": { "name": "Manufacturing & Warehousing", "desc": "Plants, workshops, distribution centers.",                 "problem": "Shifts across many zones, industrial noise, foremen need instant coordination.", "solution": "DMR system with a repeater and group calls. Rugged PDAs for warehouse operations." }
+    "cta_secondary": "Download catalog",
+    "compare_all": "See all models →",
+    "trust_delivered": "10,000+ radios deployed",
+    "trust_years": "11 years on the market",
+    "trust_teams": "{{industry}} teams trust Radiocom",
+    "horeca": {
+      "name": "HoReCa",
+      "short": "HoReCa",
+      "desc": "Hotels, restaurants, events. Discreet earpieces, clean channels.",
+      "problem": "Staff loses contact across noisy floors and between levels. Guests overhear crew chatter.",
+      "solution": "Compact PMR radios plus discreet earpieces. Instant coordination — no noise, no license required.",
+      "pains": [
+        "Waiters can't hear the kitchen at peak hours",
+        "Guests overhear internal staff chatter",
+        "Regular phones die halfway through a shift"
+      ],
+      "outcomes": [
+        { "n": "0", "u": "licensing", "l": "PMR channels — no permits needed" },
+        { "n": "12", "u": "hours", "l": "Battery per shift" },
+        { "n": "3", "u": "years", "l": "Motorola warranty" }
+      ],
+      "quote": "Guests no longer hear what's happening in the kitchen. Shifts got calmer and turnover went up — the team clears tables faster.",
+      "quote_author": "Restaurant group operator, Tashkent",
+      "faq": [
+        { "q": "Do I need a PMR license?", "a": "No. PMR446 models run on free channels without any permit." },
+        { "q": "How many radios for a restaurant?", "a": "Usually 4–6: host, floor manager, chef, bar, waiter, storeroom. We'll count on-site for free." },
+        { "q": "Can I try before I buy?", "a": "Yes — 7-day free test on your site." }
+      ]
+    },
+    "construction": {
+      "name": "Construction",
+      "short": "Construction",
+      "desc": "Massive sites. IP67 ruggedness, long-range coverage.",
+      "problem": "Dust, vibration, kilometers between crews. Regular phones don't survive and don't cover the site.",
+      "solution": "Rugged DMR radios with IP67/IP68 protection and repeaters for full site coverage.",
+      "pains": [
+        "Foreman can't reach crane ops or fitters",
+        "Phones crack, drown, die in dust",
+        "Cell signal vanishes past concrete walls"
+      ],
+      "outcomes": [
+        { "n": "IP68", "u": "", "l": "Dust, water, 2 m drops" },
+        { "n": "8", "u": "km", "l": "Range with repeater" },
+        { "n": "24", "u": "hours", "l": "System live on-site" }
+      ],
+      "quote": "We used to lose 2 hours a day chasing foremen. Now — press a button, the whole shift hears it. Paid off in a month.",
+      "quote_author": "Project lead, mixed-use complex",
+      "faq": [
+        { "q": "Will radios survive winter builds?", "a": "Yes. Motorola DP4400/DP4600 run from −30°C to +60°C." },
+        { "q": "Do I need a repeater?", "a": "Only for sites over 500 m or with heavy structure. We assess on-site." },
+        { "q": "What if a radio ends up in wet concrete?", "a": "IP68 survives submersion. We restore or replace under warranty." }
+      ]
+    },
+    "security": {
+      "name": "Security",
+      "short": "Security",
+      "desc": "Private security, facility protection, government.",
+      "problem": "You need encrypted comms with GPS shift tracking and a panic button.",
+      "solution": "DMR radios with encryption, emergency button and GPS positioning. Everything visible to the dispatcher.",
+      "pains": [
+        "Officers go off the radar — nobody knows where",
+        "Open frequencies can be scanned by anyone",
+        "Panic alerts go via phone — 30–90s lost"
+      ],
+      "outcomes": [
+        { "n": "AES256", "u": "", "l": "Military-grade encryption" },
+        { "n": "GPS", "u": "", "l": "Every post on live map" },
+        { "n": "1", "u": "button", "l": "Alarm to full shift in <1 s" }
+      ],
+      "quote": "We standardized on encrypted DMR across all our sites. Dispatch sees every officer, and the panic button has already saved us twice.",
+      "quote_author": "Director, private security firm",
+      "faq": [
+        { "q": "Can our channels be intercepted?", "a": "With AES256, effectively no. Keys rotate over-the-air." },
+        { "q": "Does GPS work indoors?", "a": "Outdoors, yes. Indoors we fall back to last-known-position." },
+        { "q": "Where does the panic button go?", "a": "To everyone on the channel plus the dispatch console with coordinates." }
+      ]
+    },
+    "mining": {
+      "name": "Mining · Oil · Gas",
+      "short": "Mining",
+      "desc": "Open pits, mines, oil-and-gas infrastructure.",
+      "problem": "Huge areas, hazardous zones, strict intrinsic-safety requirements.",
+      "solution": "ATEX-compatible DP4800/DP4600 radios with SLR8000 repeaters. Full pit coverage plus dispatcher link.",
+      "pains": [
+        "3 km pit — regular radios can't reach across",
+        "Standard electronics banned in Ex zones",
+        "Underground crew loses contact with surface"
+      ],
+      "outcomes": [
+        { "n": "ATEX", "u": "", "l": "Intrinsically-safe models" },
+        { "n": "15", "u": "km", "l": "Open-terrain range" },
+        { "n": "99.9%", "u": "", "l": "Uptime with redundant repeater" }
+      ],
+      "quote": "Radiocom rolled out the DMR network across the pit in 3 days. Second winter running — zero downtime.",
+      "quote_author": "Chief engineer, mining operation",
+      "faq": [
+        { "q": "Do you supply ATEX-certified units?", "a": "Yes — Motorola DP4801 Ex versions." },
+        { "q": "Do I need frequency licensing?", "a": "We handle full licensing with State Comms of Uzbekistan." },
+        { "q": "What warranty on industrial builds?", "a": "3 years with annual service at our center." }
+      ]
+    },
+    "transport": {
+      "name": "Transport · Logistics",
+      "short": "Transport",
+      "desc": "Fleets, warehouses, expeditions.",
+      "problem": "The dispatcher loses drivers outside the city. Cellular is expensive and drops.",
+      "solution": "PoC radios (Caltta E690) with nationwide LTE coverage plus in-vehicle DM4600 base stations.",
+      "pains": [
+        "Driver in Bukhara — Tashkent dispatch can't reach",
+        "Cellular tariffs eat freight margin",
+        "Convoy comms via phone speakerphone only"
+      ],
+      "outcomes": [
+        { "n": "100%", "u": "UZ", "l": "LTE nationwide coverage" },
+        { "n": "1", "u": "flat rate", "l": "No per-minute billing" },
+        { "n": "∞", "u": "", "l": "Group channels for convoys" }
+      ],
+      "quote": "Moved the whole fleet to PoC — 40% saved on comms, and dispatch sees every driver on the live map.",
+      "quote_author": "Fleet manager, logistics operator",
+      "faq": [
+        { "q": "Does PoC work on highways and mountains?", "a": "Anywhere with LTE — 97% coverage across UZ." },
+        { "q": "What's the monthly cost?", "a": "From 45,000 UZS/device on a 10-unit pack." },
+        { "q": "Can we mix PoC with traditional radios?", "a": "Yes, through a dispatch gateway." }
+      ]
+    },
+    "manufacturing": {
+      "name": "Manufacturing · Warehousing",
+      "short": "Manufacturing",
+      "desc": "Plants, workshops, distribution centers.",
+      "problem": "Shifts across many zones, industrial noise, foremen need instant coordination.",
+      "solution": "DMR system with a repeater and group calls. Rugged PDAs for warehouse operations.",
+      "pains": [
+        "Foremen can't hear each other over machine noise",
+        "Warehouse ops walk paper between shelves",
+        "Shift doesn't know what happened at another zone"
+      ],
+      "outcomes": [
+        { "n": "40%", "u": "", "l": "Less time coordinating shifts" },
+        { "n": "60dB", "u": "", "l": "Active noise suppression" },
+        { "n": "1C", "u": "", "l": "PDA integrations included" }
+      ],
+      "quote": "DMR plus PDAs rolled out in a week. Storemen dropped the paper, picking sped up almost 2×.",
+      "quote_author": "Ops director, packaging plant",
+      "faq": [
+        { "q": "Do radios work in noisy shops?", "a": "Yes — active noise suppression keeps voice clear at 100 dB." },
+        { "q": "Do PDAs integrate with 1C/ERP?", "a": "Yes, out of the box plus custom builds if needed." },
+        { "q": "How fast can you deploy?", "a": "2 to 7 days depending on plant size." }
+      ]
+    }
   },
   "tradein": {
     "kicker": "TRADE-IN",
@@ -69,7 +211,13 @@
     "request": "Request quote",
     "empty": "No models match the selected filters.",
     "download": "Download price list (PDF)",
-    "price": "Price"
+    "price": "Price",
+    "open_filters": "Filters",
+    "apply": "Show {{n}}",
+    "active": "active",
+    "in_stock": "In stock · Tashkent",
+    "quick_all": "All",
+    "sort": "Sort"
   },
   "product": {
     "spec": "Specifications",
@@ -81,7 +229,7 @@
   },
   "form": {
     "title": "Request quote",
-    "sub": "Leave your contacts — a manager will reach out within one business day.",
+    "sub": "Leave your contacts — a manager will reach out within 15 minutes during business hours.",
     "name": "Your name",
     "company": "Company",
     "phone": "Phone",
@@ -89,7 +237,8 @@
     "message": "Message",
     "submit": "Send request",
     "success": "Request sent. We'll be in touch.",
-    "test_title": "Free on-site test"
+    "test_title": "Free on-site test",
+    "trust_line": "We reply in 15 min · Mon–Sat 9:00–18:00"
   },
   "poc": {
     "kicker": "PoC · PUSH-TO-TALK OVER CELLULAR",
@@ -104,13 +253,7 @@
     "design": {
       "kicker": "NETWORK DESIGN · COMMISSIONING",
       "title": "We engineer the network for your site.",
-      "steps": [
-        "Site survey and installation assessment",
-        "Data collection and project documentation",
-        "Equipment selection matched to your parameters",
-        "Frequency licensing with State Comms of Uzbekistan",
-        "Commissioning and acceptance documentation"
-      ]
+      "steps": ["Site survey and installation assessment", "Data collection and project documentation", "Equipment selection matched to your parameters", "Frequency licensing with State Comms of Uzbekistan", "Commissioning and acceptance documentation"]
     },
     "rental": {
       "kicker": "RENTAL",
@@ -125,12 +268,7 @@
     "title_b": "you can trust.",
     "sub": "Warranty and post-warranty service for Motorola, Hytera and Vertex Standard radios. Original parts, fixed pricing, diagnostics on dedicated hardware.",
     "request_repair": "Request repair",
-    "advantages": {
-      "certified": "Certified technicians",
-      "parts": "Original parts",
-      "fast": "24/7 fast repair",
-      "fixed": "Fixed pricing"
-    },
+    "advantages": { "certified": "Certified technicians", "parts": "Original parts", "fast": "24/7 fast repair", "fixed": "Fixed pricing" },
     "flow": ["Diagnostics", "Analysis", "Testing", "Repair"],
     "policy_title": "Returns & exchanges",
     "visit_title": "Visit our office",
@@ -149,5 +287,10 @@
     "nav_col": "Navigate",
     "contact_col": "Contact"
   },
-  "lead": { "float": "Free test", "tooltip": "Request a specialist visit" }
+  "lead": {
+    "float": "Free test",
+    "tooltip": "Request a specialist visit",
+    "sticky_cta": "Free 7-day test",
+    "sticky_sub": "We deliver, tune and pick up"
+  }
 }

@@ -103,6 +103,9 @@ export function LeadFormSheet() {
                       {sending ? <RadarLoader size={16} /> : null}
                       {t("form.submit")}
                     </button>
+                    <div className="text-center text-mono text-[10px] text-cool mt-3">
+                      {t("form.trust_line")}
+                    </div>
                   </form>
                 </>
               )}

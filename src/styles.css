@@ -41,15 +41,15 @@
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
-/* Light theme (default when .dark not applied) */
+/* LIGHT — warm editorial paper */
 :root {
   --radius: 0.25rem;
 
-  --pitch: oklch(0.985 0 0);      /* #FAFAFA bg */
-  --charcoal: oklch(0.96 0 0);    /* near-white surface */
-  --panel: oklch(0.92 0 0);       /* #E5E5E5 panel */
-  --cool: oklch(0.42 0 0);        /* mid gray */
-  --crisp: oklch(0.14 0 0);       /* near-black text */
+  --pitch: oklch(0.965 0.006 70);       /* warm off-white paper */
+  --charcoal: oklch(0.995 0 0);          /* card surface (near-white) */
+  --panel: oklch(0.9 0.005 70);          /* subtle divider surface */
+  --cool: oklch(0.38 0.01 260);          /* body / secondary */
+  --crisp: oklch(0.14 0.01 260);         /* primary text */
   --signal: oklch(0.58 0.24 25);
 
   --background: var(--pitch);
@@ -68,12 +68,12 @@
   --accent-foreground: var(--crisp);
   --destructive: var(--signal);
   --destructive-foreground: oklch(0.97 0 0);
-  --border: oklch(0 0 0 / 10%);
-  --input: oklch(0 0 0 / 12%);
+  --border: oklch(0 0 0 / 12%);
+  --input: oklch(0 0 0 / 14%);
   --ring: var(--signal);
 }
 
-/* Dark theme */
+/* DARK — pitch black cinematic */
 .dark {
   --pitch: oklch(0.08 0 0);
   --charcoal: oklch(0.14 0 0);
@@ -148,6 +148,65 @@
   filter: grayscale(0.2);
 }
 
+/* Photo frame — softens white-bg product/hero photos on light mode,
+   no-op on dark. Wrap an <img> or its container. */
+@utility photo-frame {
+  position: relative;
+  isolation: isolate;
+}
+.photo-frame > img {
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+:root:not(.dark) .photo-frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at center, transparent 55%, color-mix(in oklab, var(--crisp) 8%, transparent) 100%),
+    linear-gradient(180deg, transparent 60%, color-mix(in oklab, var(--crisp) 6%, transparent) 100%);
+}
+:root:not(.dark) .photo-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border: 1px solid color-mix(in oklab, var(--crisp) 8%, transparent);
+}
+
+/* Fixes pure-white product cutouts blending harshly on paper */
+@utility photo-multiply {
+  mix-blend-mode: multiply;
+}
+:root.dark .photo-multiply {
+  mix-blend-mode: normal;
+}
+
+/* Hero headline that never overflows on narrow viewports */
+@utility hero-headline {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 0.88;
+  font-size: clamp(3rem, 12vw, 11rem);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+@utility hero-headline-sm {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 0.9;
+  font-size: clamp(2.5rem, 9vw, 8rem);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
+}
+
 @keyframes marquee {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
@@ -176,4 +235,28 @@
 
 @utility signal-pulse {
   animation: signal-pulse 2.4s ease-out infinite;
+}
+
+/* Radio-wave rings behind hero headline */
+@keyframes wave-ring {
+  0%   { transform: scale(0.4); opacity: 0.8; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+@utility wave-ring {
+  animation: wave-ring 3.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+/* Mask-fade edges for marquee */
+@utility mask-fade-x {
+  mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+}
+
+/* Count-up numbers */
+@utility metric-num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+  font-variant-numeric: tabular-nums;
 }
