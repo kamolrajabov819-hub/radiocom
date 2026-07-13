@@ -8,7 +8,7 @@ export function StickyLeadNet() {
   return (
     <motion.button
       onClick={() => openLead({ title: t("form.test_title") })}
-      className="fixed bottom-5 right-5 md:bottom-8 md:right-8 z-50 group signal-pulse rounded-full"
+      className="hidden lg:flex fixed bottom-8 right-8 z-40 group signal-pulse rounded-full"
       initial={{ opacity: 0, scale: 0.6 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: 1.2, duration: 0.6, type: "spring" }}
