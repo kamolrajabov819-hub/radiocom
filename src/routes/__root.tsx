@@ -16,24 +16,17 @@ import { hydrateLanguage } from "../lib/i18n";
 import { hydrateTheme } from "../lib/theme";
 import { Nav } from "../components/Nav";
 import { Footer } from "../components/Footer";
-import { StickyLeadNet } from "../components/StickyLeadNet";
 import { LeadFormSheet } from "../components/LeadFormSheet";
-import { ScrollProgress } from "../components/ScrollProgress";
 import { StickyBottomCta } from "../components/StickyBottomCta";
 
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-pitch px-6">
-      <div className="max-w-md">
-        <div className="text-mono text-[11px] text-signal mb-6">ERROR · 404</div>
-        <h1 className="text-display text-6xl md:text-7xl text-crisp">Signal lost.</h1>
-        <p className="mt-4 text-sm text-cool">The frequency you're tuned to doesn't exist.</p>
-        <Link
-          to="/"
-          className="inline-flex mt-8 text-mono text-[11px] bg-signal text-crisp px-6 py-3 hover:bg-signal/90"
-        >
-          Return to base
-        </Link>
+      <div className="max-w-md text-center">
+        <div className="text-signal text-sm mb-4">404</div>
+        <h1 className="headline text-5xl md:text-6xl text-crisp">This page can’t be found.</h1>
+        <p className="mt-4 text-cool">The link may be broken, or the page may have been moved.</p>
+        <Link to="/" className="pill pill-primary mt-8 inline-flex">Go to homepage</Link>
       </div>
     </div>
   );
@@ -48,20 +41,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-pitch px-6">
-      <div className="max-w-md">
-        <div className="text-mono text-[11px] text-signal mb-6">ERROR</div>
-        <h1 className="text-display text-5xl text-crisp">Something interfered.</h1>
-        <p className="mt-4 text-sm text-cool">Refresh the channel or head home.</p>
-        <div className="mt-8 flex gap-3">
-          <button
-            onClick={() => { router.invalidate(); reset(); }}
-            className="text-mono text-[11px] bg-signal text-crisp px-6 py-3 hover:bg-signal/90"
-          >
-            Retry
-          </button>
-          <a href="/" className="text-mono text-[11px] border border-crisp/30 text-crisp px-6 py-3 hover:border-signal hover:text-signal">
-            Home
-          </a>
+      <div className="max-w-md text-center">
+        <div className="text-signal text-sm mb-4">Something went wrong</div>
+        <h1 className="headline text-5xl text-crisp">We hit a snag.</h1>
+        <p className="mt-4 text-cool">Try again, or head back home.</p>
+        <div className="mt-8 flex gap-3 justify-center">
+          <button onClick={() => { router.invalidate(); reset(); }} className="pill pill-primary">Retry</button>
+          <a href="/" className="pill pill-ghost">Home</a>
         </div>
       </div>
     </div>
@@ -79,7 +65,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "11 years. 10,000+ clients. Motorola, Hytera and PoC radios with authorized service, free testing and nationwide delivery." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "theme-color", content: "#0a0a0a" },
+      { name: "theme-color", content: "#ffffff" },
       { name: "twitter:title", content: "Radiocom — Professional Radio Systems in Uzbekistan" },
       { name: "twitter:description", content: "11 years. 10,000+ clients. Motorola, Hytera and PoC radios with authorized service, free testing and nationwide delivery." },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/2c10cbb9-e240-4528-a145-b23d0936f9da" },
@@ -91,12 +77,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
       },
     ],
     scripts: [
       {
-        children: `try{var t=localStorage.getItem('radiocom-theme');if(t==='light'){document.documentElement.classList.remove('dark');}else{document.documentElement.classList.add('dark');}}catch(e){document.documentElement.classList.add('dark');}`,
+        children: `try{var t=localStorage.getItem('radiocom-theme');if(t==='dark'){document.documentElement.classList.add('dark');}else if(!t&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches){document.documentElement.classList.add('dark');}else{document.documentElement.classList.remove('dark');}}catch(e){}`,
       },
     ],
   }),
@@ -108,7 +94,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <head>
         <HeadContent />
       </head>
@@ -127,13 +113,11 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <div className="min-h-screen bg-pitch text-crisp">
-        <ScrollProgress />
         <Nav />
         <main>
           <Outlet />
         </main>
         <Footer />
-        <StickyLeadNet />
         <StickyBottomCta />
         <LeadFormSheet />
       </div>

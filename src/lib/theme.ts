@@ -2,10 +2,10 @@ export type Theme = "dark" | "light";
 const KEY = "radiocom-theme";
 
 export function getInitialTheme(): Theme {
-  if (typeof window === "undefined") return "dark";
+  if (typeof window === "undefined") return "light";
   const saved = window.localStorage.getItem(KEY) as Theme | null;
   if (saved === "dark" || saved === "light") return saved;
-  return window.matchMedia?.("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
 export function applyTheme(t: Theme) {
