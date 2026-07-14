@@ -1,25 +1,24 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { ArrowUpRight, Radio, HardHat, ShieldCheck, Users } from "lucide-react";
+import { ChevronRight, Repeat, ShieldCheck, Truck, Wrench, Package, Sparkles } from "lucide-react";
 import heroImg from "@/assets/hero-radio.jpg";
 import horecaImg from "@/assets/industry-horeca.jpg";
 import constructionImg from "@/assets/industry-construction.jpg";
 import securityImg from "@/assets/industry-security.jpg";
-import { MagneticButton } from "@/components/MagneticButton";
-import { Reveal, RevealWords } from "@/components/Reveal";
 import { openLead } from "@/components/LeadFormSheet";
 import { BrandsStrip } from "@/components/BrandsStrip";
-import { Link } from "@tanstack/react-router";
+import { products, formatPrice } from "@/data/products";
+import { spring } from "@/lib/springs";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Radiocom — Professional Radio Systems in Uzbekistan" },
-      { name: "description", content: "11 years. 10,000+ clients. Motorola, Hytera and PoC radios with authorized service, free testing and nationwide delivery." },
-      { property: "og:title", content: "Radiocom — Professional Radio Systems in Uzbekistan" },
-      { property: "og:description", content: "11 years. 10,000+ clients. Motorola, Hytera and PoC radios with authorized service, free testing and nationwide delivery." },
+      { name: "description", content: "Pro communication. Unbreakable. 11 years, 10,000+ clients. Motorola, Hytera, PoC — authorized service and free testing across Uzbekistan." },
+      { property: "og:title", content: "Radiocom — Pro Communication. Unbreakable." },
+      { property: "og:description", content: "Motorola, Hytera and PoC radios with authorized service, free testing and nationwide delivery." },
     ],
   }),
   component: HomePage,
@@ -29,322 +28,308 @@ function HomePage() {
   return (
     <>
       <Hero />
-      <Marquee />
-      <Industries />
-      <TradeIn />
-      <Stats />
+      <FeatureDark />
+      <Bento />
+      <IndustriesTeaser />
+      <FeaturedCatalog />
       <BrandsStrip />
+      <FinalCta />
     </>
   );
 }
 
+/* ─── Hero ───────────────────────────────────────────────── */
 function Hero() {
   const { t } = useTranslation();
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.12]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.05]);
+  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0.5]);
 
   return (
-    <section ref={ref} className="relative min-h-screen overflow-hidden pt-16">
-      <motion.div style={{ y, scale }} className="absolute inset-0">
-        <img
-          src={heroImg}
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover opacity-60 dark:opacity-70"
-          width={1600}
-          height={1200}
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-pitch via-pitch/70 to-pitch/20" />
-        <div className="absolute inset-0 bg-gradient-to-t from-pitch via-transparent to-pitch/50" />
+    <section ref={ref} className="pt-24 md:pt-28 pb-0 bg-pitch overflow-hidden">
+      <div className="max-w-[1200px] mx-auto px-6 text-center">
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={spring}
+          className="headline-hero text-crisp"
+        >
+          {t("home.hero.title")}
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...spring, delay: 0.1 }}
+          className="subhead mt-5 text-lg md:text-2xl max-w-3xl mx-auto"
+        >
+          {t("home.hero.sub")}
+        </motion.p>
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...spring, delay: 0.2 }}
+          className="mt-8 flex items-center justify-center gap-2 md:gap-4 flex-wrap"
+        >
+          <button onClick={() => openLead({ title: t("home.hero.cta_primary") })} className="pill pill-accent">
+            {t("home.hero.cta_primary")}
+          </button>
+          <Link to="/catalog" className="pill-link">
+            {t("home.hero.cta_secondary")} <ChevronRight className="w-4 h-4" />
+          </Link>
+        </motion.div>
+      </div>
+
+      <motion.div
+        style={{ scale, opacity }}
+        className="mt-16 md:mt-20 relative w-full h-[60vh] md:h-[80vh]"
+      >
+        <img src={heroImg} alt="" className="w-full h-full object-cover" />
       </motion.div>
-
-      {/* radio-wave rings behind title */}
-      <div className="absolute top-1/2 -translate-y-1/2 left-4 md:left-10 pointer-events-none hidden sm:block" aria-hidden>
-        {[0, 1, 2].map((i) => (
-          <div
-            key={i}
-            className="absolute w-40 h-40 md:w-64 md:h-64 rounded-full border border-signal/25 wave-ring"
-            style={{ animationDelay: `${i * 1.1}s` }}
-          />
-        ))}
-      </div>
-
-      <div className="absolute inset-0 pointer-events-none hidden md:block">
-        <div className="absolute inset-y-0 left-[8.33%] w-px bg-crisp/[0.04]" />
-        <div className="absolute inset-y-0 left-1/2 w-px bg-crisp/[0.04]" />
-        <div className="absolute inset-y-0 right-[8.33%] w-px bg-crisp/[0.04]" />
-      </div>
-
-      <div className="relative px-5 sm:px-6 md:px-10 pt-12 md:pt-32 pb-24 min-h-screen flex flex-col justify-between">
-        <div>
-          <Reveal delay={0.1}>
-            <div className="flex items-center gap-4 mb-8 md:mb-12">
-              <span className="h-px w-8 md:w-12 bg-signal" />
-              <span className="text-mono text-[10px] md:text-[11px] text-cool tracking-widest">
-                {t("hero.eyebrow")}
-              </span>
-            </div>
-          </Reveal>
-
-          <h1 className="hero-headline max-w-[95%]">
-            <span className="block">
-              <RevealWords text={t("hero.title_a")} />
-            </span>
-            <span className="block pl-[6vw] md:pl-[16vw] relative">
-              <RevealWords text={t("hero.title_b")} stagger={0.06} />
-              <span className="text-signal">.</span>
-              <span className="absolute -bottom-1 md:-bottom-3 left-[6vw] md:left-[16vw] h-1 md:h-1.5 w-[22vw] bg-signal origin-left scale-x-0 animate-[grow_1s_1.2s_forwards_ease-out]" />
-            </span>
-          </h1>
-
-          <div className="mt-10 md:mt-24 grid grid-cols-12 gap-4 md:gap-6">
-            <div className="col-span-12 md:col-span-6 md:col-start-6">
-              <Reveal delay={0.6}>
-                <p className="text-cool text-base md:text-xl leading-relaxed">{t("hero.sub")}</p>
-              </Reveal>
-              <Reveal delay={0.8}>
-                <div className="mt-8 md:mt-10 flex flex-col sm:flex-row flex-wrap gap-3 md:gap-4">
-                  <button
-                    onClick={() => openLead({ title: t("hero.cta_primary") })}
-                    className="w-full sm:w-auto signal-glow bg-signal text-crisp text-mono text-[12px] px-6 md:px-8 py-4 md:py-5 hover:bg-signal/90 transition-all flex items-center justify-center gap-3 min-h-14"
-                  >
-                    {t("hero.cta_primary")}
-                    <ArrowUpRight className="w-4 h-4" />
-                  </button>
-                  <Link
-                    to="/catalog"
-                    className="w-full sm:w-auto text-mono text-[12px] border border-crisp/25 text-crisp px-6 md:px-8 py-4 md:py-5 hover:border-signal hover:text-signal transition-colors flex items-center justify-center gap-3 min-h-14"
-                  >
-                    {t("hero.cta_secondary")}
-                    <ArrowUpRight className="w-4 h-4" />
-                  </Link>
-                </div>
-              </Reveal>
-              <Reveal delay={1}>
-                <div className="mt-6 flex items-center gap-2 text-mono text-[10px] text-cool">
-                  <Users className="w-3.5 h-3.5 text-signal" />
-                  <span>{t("hero.social_proof")}</span>
-                </div>
-              </Reveal>
-            </div>
-          </div>
-        </div>
-
-        <Reveal delay={1}>
-          <div className="flex items-end justify-between mt-12">
-            <div className="text-mono text-[10px] text-cool">[ 01 ] · TASHKENT · UZ</div>
-            <div className="text-mono text-[10px] text-cool hidden md:block">{t("hero.scroll")} ↓</div>
-          </div>
-        </Reveal>
-      </div>
-
-      <style>{`@keyframes grow { to { transform: scaleX(1); } }`}</style>
     </section>
   );
 }
 
-function Marquee() {
+/* ─── Dark feature strip ─────────────────────────────────── */
+function FeatureDark() {
   const { t } = useTranslation();
-  const items = t("marquee", { returnObjects: true }) as string[];
-  const all = [...items, ...items, ...items];
   return (
-    <section className="border-y hairline overflow-hidden py-6 bg-charcoal mask-fade-x">
-      <div className="marquee-track flex gap-16 whitespace-nowrap">
-        {all.map((s, i) => (
-          <div key={i} className="flex items-center gap-16 text-mono text-sm text-crisp">
-            <span className="h-1.5 w-1.5 rounded-full bg-signal" />
-            {s}
-          </div>
-        ))}
-      </div>
+    <section className="bg-black text-white py-24 md:py-40 text-center px-6 overflow-hidden">
+      <motion.h2
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.4 }}
+        transition={spring}
+        className="headline text-white mx-auto max-w-4xl"
+        style={{ fontSize: "clamp(2.25rem, 6vw, 4.5rem)" }}
+      >
+        {t("home.feature.title")}
+      </motion.h2>
+      <motion.p
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.4 }}
+        transition={{ ...spring, delay: 0.1 }}
+        className="mt-5 text-lg md:text-xl text-white/60 max-w-2xl mx-auto"
+      >
+        {t("home.feature.sub")}
+      </motion.p>
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.4 }}
+        transition={{ ...spring, delay: 0.15 }}
+        className="mt-8 flex items-center justify-center gap-6 flex-wrap"
+      >
+        <Link to="/catalog" className="pill pill-primary" style={{ background: "#fff", color: "#000" }}>
+          {t("home.hero.cta_secondary")}
+        </Link>
+        <Link to="/poc" className="text-signal text-[15px] inline-flex items-center gap-1">
+          {t("home.feature.link")} <ChevronRight className="w-4 h-4" />
+        </Link>
+      </motion.div>
     </section>
   );
 }
 
-function Industries() {
+/* ─── Bento grid ─────────────────────────────────────────── */
+function Bento() {
   const { t } = useTranslation();
-  const rows = [
-    { key: "horeca", img: horecaImg, Icon: Radio },
-    { key: "construction", img: constructionImg, Icon: HardHat },
-    { key: "security", img: securityImg, Icon: ShieldCheck },
+  const items = [
+    { key: "tradein", Icon: Repeat, span: "md:col-span-2 md:row-span-2", size: "large" },
+    { key: "models", Icon: Package, span: "" },
+    { key: "warranty", Icon: ShieldCheck, span: "" },
+    { key: "delivery", Icon: Truck, span: "" },
+    { key: "test", Icon: Sparkles, span: "" },
+    { key: "service", Icon: Wrench, span: "md:col-span-2" },
   ] as const;
-  const [hover, setHover] = useState<number | null>(null);
 
   return (
-    <section id="industries" className="relative">
-      <div className="px-6 md:px-10 pt-24 md:pt-32 pb-12 md:pb-16 grid grid-cols-12 gap-6">
-        <div className="col-span-12 md:col-span-8">
-          <Reveal>
-            <div className="text-mono text-[11px] text-signal mb-4">{t("industries.kicker")}</div>
-            <h2 className="text-display text-5xl md:text-7xl">
-              {t("industries.title")}<span className="text-signal">.</span>
-            </h2>
-          </Reveal>
+    <section className="section bg-pitch px-6 md:px-10">
+      <div className="max-w-[1200px] mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={spring}
+          className="text-center mb-14"
+        >
+          <h2 className="headline text-crisp text-4xl md:text-6xl">{t("home.bento.title")}</h2>
+          <p className="subhead mt-4 text-lg max-w-2xl mx-auto">{t("home.bento.sub")}</p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 auto-rows-[220px] md:auto-rows-[240px] gap-4">
+          {items.map((it, i) => (
+            <motion.div
+              key={it.key}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ ...spring, delay: i * 0.05 }}
+              className={`bento-card p-8 flex flex-col justify-between ${it.span}`}
+            >
+              <div>
+                <it.Icon className="w-6 h-6 text-signal" strokeWidth={1.75} />
+                <h3 className={`headline text-crisp mt-4 ${it.key === "tradein" ? "text-3xl md:text-5xl" : "text-2xl md:text-3xl"}`}>
+                  {t(`home.bento.${it.key}.title`)}
+                </h3>
+              </div>
+              <p className="subhead text-[15px] mt-4 max-w-md">{t(`home.bento.${it.key}.sub`)}</p>
+            </motion.div>
+          ))}
         </div>
-        <div className="col-span-12 md:col-span-4 flex md:justify-end md:items-end">
-          <Link to="/industries" className="text-mono text-[11px] text-signal border-b border-signal/50 hover:border-signal">
-            → {t("industries.view_all")}
+      </div>
+    </section>
+  );
+}
+
+/* ─── Industries teaser ─────────────────────────────────── */
+function IndustriesTeaser() {
+  const { t } = useTranslation();
+  const items = [
+    { slug: "horeca" as const, img: horecaImg },
+    { slug: "construction" as const, img: constructionImg },
+    { slug: "security" as const, img: securityImg },
+  ];
+  return (
+    <section className="section bg-charcoal px-6 md:px-10">
+      <div className="max-w-[1200px] mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={spring}
+          className="text-center mb-14"
+        >
+          <h2 className="headline text-crisp text-4xl md:text-6xl">{t("industries.title")}</h2>
+          <p className="subhead mt-4 text-lg">{t("industries.overview_sub")}</p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {items.map((it, i) => (
+            <motion.div
+              key={it.slug}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ ...spring, delay: i * 0.08 }}
+            >
+              <Link
+                to="/industries/$slug"
+                params={{ slug: it.slug }}
+                className="block bg-pitch rounded-3xl overflow-hidden group"
+              >
+                <div className="aspect-[4/3] overflow-hidden">
+                  <img src={it.img} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[900ms]" />
+                </div>
+                <div className="p-6">
+                  <h3 className="headline text-2xl text-crisp">{t(`industries.${it.slug}.name`)}</h3>
+                  <p className="subhead text-[15px] mt-2 line-clamp-2">{t(`industries.${it.slug}.desc`)}</p>
+                  <div className="mt-4 text-signal text-[14px] inline-flex items-center gap-1">
+                    {t("industries.cta")} <ChevronRight className="w-4 h-4" />
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+        <div className="mt-10 text-center">
+          <Link to="/industries" className="pill-link">
+            {t("industries.view_all")} <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
       </div>
+    </section>
+  );
+}
 
-      <div className="relative">
-        {rows.map((r, i) => {
-          const name = t(`industries.${r.key}.name`);
-          const desc = t(`industries.${r.key}.desc`);
-          return (
-            <Link
-              key={r.key}
-              to="/industries/$slug"
-              params={{ slug: r.key }}
-              onMouseEnter={() => setHover(i)}
-              onMouseLeave={() => setHover(null)}
-              className="relative border-t hairline group cursor-pointer overflow-hidden block"
+/* ─── Featured catalog ──────────────────────────────────── */
+function FeaturedCatalog() {
+  const { t, i18n } = useTranslation();
+  const lang = (i18n.language.slice(0, 2) as "ru" | "en" | "uz") || "ru";
+  const featured = ["m-dp4400", "c-e690", "h-s35-pro-lf", "rc-21"]
+    .map((id) => products.find((p) => p.id === id))
+    .filter(Boolean) as typeof products;
+
+  return (
+    <section className="section bg-pitch px-6 md:px-10">
+      <div className="max-w-[1200px] mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={spring}
+          className="flex items-end justify-between mb-10"
+        >
+          <h2 className="headline text-crisp text-4xl md:text-5xl">{t("home.featured.title")}</h2>
+          <Link to="/catalog" className="pill-link">
+            {t("home.featured.link")} <ChevronRight className="w-4 h-4" />
+          </Link>
+        </motion.div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {featured.map((p, i) => (
+            <motion.button
+              key={p.id}
+              onClick={() => openLead({ product: p.name })}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ ...spring, delay: i * 0.06 }}
+              className="bento-card p-6 md:p-8 text-left group"
             >
-              <motion.div
-                className="absolute inset-0 pointer-events-none"
-                initial={false}
-                animate={{ opacity: hover === i ? 1 : 0 }}
-                transition={{ duration: 0.6 }}
-              >
-                <img src={r.img} alt="" className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
-                <div className="absolute inset-0 bg-pitch/60" />
-              </motion.div>
-
-              <div className="relative px-6 md:px-10 py-8 md:py-14 grid grid-cols-12 gap-4 md:gap-6 items-center">
-                <div className="col-span-2 md:col-span-1 text-mono text-[11px] text-cool">0{i + 1}</div>
-                <div className="col-span-10 md:col-span-4 flex items-center gap-4 md:gap-6 min-w-0">
-                  <r.Icon className={`w-5 h-5 md:w-6 md:h-6 shrink-0 transition-colors ${hover === i ? "text-signal" : "text-cool"}`} />
-                  <h3 className="text-display text-2xl sm:text-3xl md:text-6xl transition-transform group-hover:translate-x-3 break-words min-w-0">
-                    {name}
-                  </h3>
-                </div>
-                <div className="col-span-12 md:col-span-6 md:col-start-7">
-                  <p className="text-cool text-sm md:text-lg max-w-md">{desc}</p>
-                </div>
-                <div className="col-span-12 md:col-span-1 flex md:justify-end">
-                  <ArrowUpRight className={`w-6 h-6 transition-all ${hover === i ? "text-signal rotate-0" : "text-cool -rotate-45"}`} />
-                </div>
+              <div className="aspect-square flex items-center justify-center mb-6">
+                <img src={p.image} alt={p.name} className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-500" />
               </div>
-            </Link>
-          );
-        })}
-        <div className="border-t hairline" />
-      </div>
-    </section>
-  );
-}
-
-function TradeIn() {
-  const { t } = useTranslation();
-  return (
-    <section id="tradein" className="relative overflow-hidden py-24 md:py-32">
-      <div className="absolute inset-0">
-        <div className="absolute inset-y-0 right-0 w-full md:w-1/2 bg-signal opacity-90 md:opacity-100" />
-      </div>
-      <div className="relative px-6 md:px-10 grid grid-cols-12 gap-6">
-        <div className="col-span-12 md:col-span-6">
-          <Reveal>
-            <div className="text-mono text-[11px] text-signal mb-6">{t("tradein.kicker")}</div>
-          </Reveal>
-          <h2 className="text-display text-4xl sm:text-5xl md:text-8xl leading-[0.9]">
-            <RevealWords text={t("tradein.title_a")} />
-            <span className="block text-crisp md:text-signal">
-              <RevealWords text={t("tradein.title_b")} />
-            </span>
-          </h2>
-          <Reveal delay={0.4}>
-            <p className="text-cool text-base md:text-lg max-w-md mt-8 md:mt-10">{t("tradein.desc")}</p>
-            <div className="mt-8 md:mt-10">
-              <MagneticButton onClick={() => openLead({ title: t("tradein.cta") })}>
-                {t("tradein.cta")}
-                <ArrowUpRight className="w-4 h-4" />
-              </MagneticButton>
-            </div>
-          </Reveal>
-        </div>
-        <div className="col-span-12 md:col-span-6 relative min-h-[280px] md:min-h-[380px] flex items-center justify-center">
-          <TradeInGraphic />
+              <div className="text-[12px] text-cool">{p.brand}</div>
+              <h3 className="text-[15px] md:text-base font-semibold text-crisp mt-1 leading-tight">{p.name}</h3>
+              <div className="text-[13px] text-cool mt-1">{formatPrice(p.price, lang)}</div>
+              <div className="text-signal text-[13px] mt-3 inline-flex items-center gap-1">
+                {t("product.cta")} <ChevronRight className="w-3.5 h-3.5" />
+              </div>
+            </motion.button>
+          ))}
         </div>
       </div>
     </section>
   );
 }
 
-function TradeInGraphic() {
-  return (
-    <div className="relative w-full max-w-md aspect-square">
-      <motion.div
-        className="absolute left-0 top-1/2 -translate-y-1/2 w-32 md:w-40 h-44 md:h-56"
-        initial={{ opacity: 0, x: -30, rotate: -12 }}
-        whileInView={{ opacity: 1, x: 0, rotate: -8 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-      >
-        <div className="w-full h-full bg-pitch/80 border-2 border-crisp/40 relative">
-          <div className="absolute top-2 left-1/2 -translate-x-1/2 w-2 h-14 bg-crisp/40" />
-          <div className="absolute top-16 left-3 right-3 h-14 bg-crisp/10 border border-crisp/20" />
-          <div className="absolute inset-x-3 bottom-3 grid grid-cols-3 gap-1">
-            {Array.from({ length: 9 }).map((_, i) => (
-              <div key={i} className="aspect-square bg-crisp/10 border border-crisp/20" />
-            ))}
-          </div>
-          <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
-            <path d="M 20 15 L 45 35 L 30 50 L 55 65 L 40 85" stroke="var(--signal)" strokeWidth="1.5" fill="none" />
-          </svg>
-        </div>
-      </motion.div>
-
-      <motion.div
-        className="absolute right-0 top-1/2 -translate-y-1/2 w-36 md:w-44 h-48 md:h-60"
-        initial={{ opacity: 0, x: 30, rotate: 15 }}
-        whileInView={{ opacity: 1, x: 0, rotate: 6 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8, delay: 0.3 }}
-      >
-        <div className="w-full h-full bg-crisp text-pitch relative shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]">
-          <div className="absolute top-2 left-1/2 -translate-x-1/2 w-2 h-12 bg-pitch" />
-          <div className="absolute top-16 left-3 right-3 h-12 bg-signal/90" />
-          <div className="absolute inset-x-3 bottom-3 grid grid-cols-3 gap-1">
-            {Array.from({ length: 9 }).map((_, i) => (
-              <div key={i} className="aspect-square bg-pitch/80" />
-            ))}
-          </div>
-        </div>
-      </motion.div>
-
-      <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-        initial={{ opacity: 0, scale: 0.5 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.7 }}
-      >
-        <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-pitch border border-signal flex items-center justify-center text-signal text-mono text-[10px]">↔</div>
-      </motion.div>
-    </div>
-  );
-}
-
-function Stats() {
+/* ─── Final CTA ────────────────────────────────────────── */
+function FinalCta() {
   const { t } = useTranslation();
-  const items = [
-    { n: "35", label: t("stats.types") },
-    { n: "10K+", label: t("stats.clients") },
-    { n: "11", label: t("stats.years") },
-  ];
   return (
-    <section className="border-t hairline">
-      <div className="px-6 md:px-10 grid grid-cols-1 md:grid-cols-3">
-        {items.map((it, i) => (
-          <Reveal key={i} delay={i * 0.1}>
-            <div className={`py-12 md:py-24 px-2 ${i < 2 ? "md:border-r hairline" : ""} border-b md:border-b-0 hairline`}>
-              <div className="text-display text-7xl md:text-9xl text-crisp">{it.n}</div>
-              <div className="text-mono text-[11px] text-cool mt-4">{it.label}</div>
-            </div>
-          </Reveal>
-        ))}
+    <section className="bg-black text-white py-24 md:py-40 px-6 text-center">
+      <motion.h2
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.4 }}
+        transition={spring}
+        className="headline text-white mx-auto max-w-3xl"
+        style={{ fontSize: "clamp(2.25rem, 6vw, 4.5rem)" }}
+      >
+        {t("home.final_cta.title")}
+      </motion.h2>
+      <motion.p
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.4 }}
+        transition={{ ...spring, delay: 0.1 }}
+        className="mt-4 text-lg text-white/60 max-w-2xl mx-auto"
+      >
+        {t("home.final_cta.sub")}
+      </motion.p>
+      <div className="mt-8 flex items-center justify-center gap-4 flex-wrap">
+        <button
+          onClick={() => openLead({ title: t("home.final_cta.button") })}
+          className="pill"
+          style={{ background: "#fff", color: "#000" }}
+        >
+          {t("home.final_cta.button")}
+        </button>
+        <Link to="/service" className="text-signal text-[15px] inline-flex items-center gap-1">
+          {t("nav.service")} <ChevronRight className="w-4 h-4" />
+        </Link>
       </div>
     </section>
   );

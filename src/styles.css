@@ -5,10 +5,13 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 1.75rem;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -29,6 +32,7 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
+  /* Legacy token names kept — remapped to Apple palette */
   --color-pitch: var(--pitch);
   --color-charcoal: var(--charcoal);
   --color-panel: var(--panel);
@@ -36,54 +40,56 @@
   --color-crisp: var(--crisp);
   --color-signal: var(--signal);
 
-  --font-display: "Space Grotesk", "Inter", sans-serif;
-  --font-sans: "Space Grotesk", "Inter", sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-display: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Inter", system-ui, -apple-system, sans-serif;
 }
 
-/* LIGHT — warm editorial paper */
+/* LIGHT — Apple white */
 :root {
-  --radius: 0.25rem;
+  --radius: 1rem;
 
-  --pitch: oklch(0.965 0.006 70);       /* warm off-white paper */
-  --charcoal: oklch(0.995 0 0);          /* card surface (near-white) */
-  --panel: oklch(0.9 0.005 70);          /* subtle divider surface */
-  --cool: oklch(0.38 0.01 260);          /* body / secondary */
-  --crisp: oklch(0.14 0.01 260);         /* primary text */
-  --signal: oklch(0.58 0.24 25);
+  --pitch: #ffffff;
+  --charcoal: #f5f5f7;
+  --panel: #fafafa;
+  --cool: #86868b;
+  --crisp: #1d1d1f;
+  --signal: #0066cc;
 
   --background: var(--pitch);
   --foreground: var(--crisp);
   --card: var(--charcoal);
   --card-foreground: var(--crisp);
-  --popover: var(--charcoal);
+  --popover: #ffffff;
   --popover-foreground: var(--crisp);
-  --primary: var(--signal);
-  --primary-foreground: oklch(0.97 0 0);
-  --secondary: var(--panel);
+  --primary: var(--crisp);
+  --primary-foreground: #ffffff;
+  --secondary: var(--charcoal);
   --secondary-foreground: var(--crisp);
-  --muted: var(--panel);
+  --muted: var(--charcoal);
   --muted-foreground: var(--cool);
-  --accent: var(--panel);
-  --accent-foreground: var(--crisp);
-  --destructive: var(--signal);
-  --destructive-foreground: oklch(0.97 0 0);
-  --border: oklch(0 0 0 / 12%);
-  --input: oklch(0 0 0 / 14%);
+  --accent: var(--signal);
+  --accent-foreground: #ffffff;
+  --destructive: #ff3b30;
+  --destructive-foreground: #ffffff;
+  --border: rgba(0, 0, 0, 0.08);
+  --input: rgba(0, 0, 0, 0.1);
   --ring: var(--signal);
 }
 
-/* DARK — pitch black cinematic */
+/* DARK — Apple black */
 .dark {
-  --pitch: oklch(0.08 0 0);
-  --charcoal: oklch(0.14 0 0);
-  --panel: oklch(0.19 0 0);
-  --cool: oklch(0.68 0 0);
-  --crisp: oklch(0.97 0 0);
+  --pitch: #000000;
+  --charcoal: #1c1c1e;
+  --panel: #2c2c2e;
+  --cool: #86868b;
+  --crisp: #f5f5f7;
+  --signal: #2997ff;
 
-  --border: oklch(1 0 0 / 8%);
-  --input: oklch(1 0 0 / 12%);
-  --primary-foreground: oklch(0.97 0 0);
+  --primary: #ffffff;
+  --primary-foreground: #000000;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.12);
 }
 
 @layer base {
@@ -98,165 +104,194 @@
     background-color: var(--pitch);
     color: var(--crisp);
     font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01", "ss03";
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
   ::selection {
-    background: var(--signal);
-    color: oklch(0.97 0 0);
+    background: color-mix(in oklab, var(--signal) 30%, transparent);
+    color: var(--crisp);
+  }
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.022em;
   }
 }
 
+/* ─── Apple-style utilities ─────────────────────────────────────── */
+
 @utility text-display {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-weight: 600;
   letter-spacing: -0.03em;
-  line-height: 0.9;
+  line-height: 1.05;
 }
 
 @utility text-mono {
-  font-family: var(--font-mono);
-  font-feature-settings: "ss01", "ss02";
+  font-family: var(--font-sans);
+  font-weight: 500;
   letter-spacing: 0.02em;
-  text-transform: uppercase;
+}
+
+@utility headline {
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+@utility headline-hero {
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1.02;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  font-size: clamp(2.75rem, 8vw, 6rem);
+}
+
+@utility subhead {
+  color: var(--cool);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+  text-wrap: balance;
 }
 
 @utility hairline {
-  border-color: color-mix(in oklab, var(--crisp) 12%, transparent);
+  border-color: var(--border);
 }
 
-@utility marquee-track {
-  animation: marquee 40s linear infinite;
+/* Frosted top nav */
+@utility frost-nav {
+  backdrop-filter: saturate(180%) blur(20px);
+  background-color: color-mix(in oklab, var(--pitch) 72%, transparent);
+  border-bottom: 1px solid var(--border);
 }
 
-@utility signal-glow {
-  box-shadow: 0 0 0 1px color-mix(in oklab, var(--signal) 40%, transparent),
-              0 20px 60px -10px color-mix(in oklab, var(--signal) 55%, transparent),
-              0 0 80px -20px color-mix(in oklab, var(--signal) 60%, transparent);
+/* Pill buttons */
+@utility pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.375rem;
+  border-radius: 9999px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 0.2s, color 0.2s, opacity 0.2s;
+  white-space: nowrap;
+}
+.pill:hover { transform: translateY(-1px); }
+.pill:active { transform: translateY(0); }
+
+@utility pill-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.8125rem;
 }
 
+@utility pill-primary {
+  background: var(--crisp);
+  color: var(--pitch);
+}
+.pill-primary:hover { background: color-mix(in oklab, var(--crisp) 88%, var(--signal)); }
+
+@utility pill-ghost {
+  background: color-mix(in oklab, var(--crisp) 6%, transparent);
+  color: var(--crisp);
+}
+.pill-ghost:hover { background: color-mix(in oklab, var(--crisp) 10%, transparent); }
+
+@utility pill-accent {
+  background: var(--signal);
+  color: #ffffff;
+}
+.pill-accent:hover { background: color-mix(in oklab, var(--signal) 88%, #000); }
+
+@utility pill-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--signal);
+  font-weight: 400;
+  font-size: 0.9375rem;
+  letter-spacing: -0.01em;
+  transition: opacity 0.2s;
+}
+.pill-link:hover { opacity: 0.75; }
+
+/* Bento card */
+@utility bento-card {
+  background: var(--charcoal);
+  border-radius: 1.75rem;
+  overflow: hidden;
+  position: relative;
+}
+
+@utility section {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+}
+@media (min-width: 768px) {
+  .section { padding-top: 8rem; padding-bottom: 8rem; }
+}
+
+@utility section-tight {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+@media (min-width: 768px) {
+  .section-tight { padding-top: 6rem; padding-bottom: 6rem; }
+}
+
+/* Rounded Google Maps embed */
 @utility map-embed {
   position: relative;
   width: 100%;
-  height: 400px;
+  height: 420px;
   overflow: hidden;
+  border-radius: 1.75rem;
 }
 .map-embed iframe {
   width: 100% !important;
-  height: 400px !important;
+  height: 420px !important;
   border: 0;
-  filter: grayscale(0.2);
+}
+:root.dark .map-embed iframe {
+  filter: invert(0.92) hue-rotate(180deg) contrast(0.9);
 }
 
-/* Photo frame — softens white-bg product/hero photos on light mode,
-   no-op on dark. Wrap an <img> or its container. */
-@utility photo-frame {
-  position: relative;
-  isolation: isolate;
-}
-.photo-frame > img {
-  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-}
-:root:not(.dark) .photo-frame::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse at center, transparent 55%, color-mix(in oklab, var(--crisp) 8%, transparent) 100%),
-    linear-gradient(180deg, transparent 60%, color-mix(in oklab, var(--crisp) 6%, transparent) 100%);
-}
-:root:not(.dark) .photo-frame::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  border: 1px solid color-mix(in oklab, var(--crisp) 8%, transparent);
+/* Sticky filter mask fade */
+@utility mask-fade-x {
+  mask-image: linear-gradient(90deg, transparent, black 4%, black 96%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 4%, black 96%, transparent);
 }
 
-/* Fixes pure-white product cutouts blending harshly on paper */
-@utility photo-multiply {
-  mix-blend-mode: multiply;
+/* Hide scrollbar for pill filter row */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
-:root.dark .photo-multiply {
-  mix-blend-mode: normal;
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Gradient text reveal for PoC hero */
+@utility gradient-text {
+  background: linear-gradient(180deg, var(--crisp) 0%, color-mix(in oklab, var(--crisp) 50%, transparent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-/* Hero headline that never overflows on narrow viewports */
-@utility hero-headline {
-  font-family: var(--font-display);
-  font-weight: 600;
-  letter-spacing: -0.035em;
-  line-height: 0.88;
-  font-size: clamp(3rem, 12vw, 11rem);
-  overflow-wrap: anywhere;
-  word-break: break-word;
-  hyphens: auto;
-}
-
-@utility hero-headline-sm {
-  font-family: var(--font-display);
-  font-weight: 600;
-  letter-spacing: -0.03em;
-  line-height: 0.9;
-  font-size: clamp(2.5rem, 9vw, 8rem);
-  overflow-wrap: anywhere;
-  word-break: break-word;
-  hyphens: auto;
-}
-
+/* Marquee (kept, restyled) */
 @keyframes marquee {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
-
-@keyframes radar-sweep {
-  0%   { transform: rotate(0deg); opacity: 1; }
-  100% { transform: rotate(360deg); opacity: 1; }
-}
-
-@utility radar-arc {
-  animation: radar-sweep 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  transform-origin: center;
-}
-
-@keyframes signal-pulse {
-  0%, 100% {
-    box-shadow: 0 0 0 0 color-mix(in oklab, var(--signal) 60%, transparent),
-                0 20px 50px -12px color-mix(in oklab, var(--signal) 55%, transparent);
-  }
-  50% {
-    box-shadow: 0 0 0 18px color-mix(in oklab, var(--signal) 0%, transparent),
-                0 20px 60px -12px color-mix(in oklab, var(--signal) 65%, transparent);
-  }
-}
-
-@utility signal-pulse {
-  animation: signal-pulse 2.4s ease-out infinite;
-}
-
-/* Radio-wave rings behind hero headline */
-@keyframes wave-ring {
-  0%   { transform: scale(0.4); opacity: 0.8; }
-  100% { transform: scale(2.4); opacity: 0; }
-}
-@utility wave-ring {
-  animation: wave-ring 3.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-}
-
-/* Mask-fade edges for marquee */
-@utility mask-fade-x {
-  mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
-  -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
-}
-
-/* Count-up numbers */
-@utility metric-num {
-  font-family: var(--font-display);
-  font-weight: 700;
-  letter-spacing: -0.04em;
-  line-height: 0.9;
-  font-variant-numeric: tabular-nums;
+@utility marquee-track {
+  animation: marquee 40s linear infinite;
 }

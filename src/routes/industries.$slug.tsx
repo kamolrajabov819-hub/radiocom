@@ -2,17 +2,16 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { ArrowUpRight, Check, AlertCircle, Plus, Minus, FileDown, Quote } from "lucide-react";
+import { ChevronRight, Plus, Minus, FileDown, Check, Quote } from "lucide-react";
 import { INDUSTRY_SLUGS, industryPicks, type IndustrySlug } from "@/data/industries";
 import { products, formatPrice } from "@/data/products";
-import { Reveal, RevealWords } from "@/components/Reveal";
 import { openLead } from "@/components/LeadFormSheet";
-import { MagneticButton } from "@/components/MagneticButton";
 import { CountUp } from "@/components/CountUp";
 import catalogAsset from "@/assets/radiocom-catalog.pdf.asset.json";
 import horecaImg from "@/assets/industry-horeca.jpg";
 import constructionImg from "@/assets/industry-construction.jpg";
 import securityImg from "@/assets/industry-security.jpg";
+import { spring } from "@/lib/springs";
 
 const IMAGES: Record<string, string> = {
   horeca: horecaImg,
@@ -44,301 +43,245 @@ function IndustryPage() {
   const { t, i18n } = useTranslation();
   const lang = (i18n.language.slice(0, 2) as "ru" | "en" | "uz") || "ru";
   const s = slug as IndustrySlug;
-  const picks = industryPicks[s].map((id) => products.find((p) => p.id === id)).filter(Boolean) as typeof products;
+  const picks = industryPicks[s]
+    .map((id) => products.find((p) => p.id === id))
+    .filter(Boolean) as typeof products;
 
-  const pains = (t(`industries.${s}.pains`, { returnObjects: true }) as string[]) || [];
   const outcomes = (t(`industries.${s}.outcomes`, { returnObjects: true }) as Outcome[]) || [];
   const faq = (t(`industries.${s}.faq`, { returnObjects: true }) as FAQ[]) || [];
   const industryName = t(`industries.${s}.name`);
 
   return (
     <>
-      {/* Hero */}
-      <section className="relative pt-16 min-h-[80vh] overflow-hidden">
-        <div className="absolute inset-0">
-          <motion.img
-            src={IMAGES[s]}
-            alt=""
-            className="absolute inset-0 h-full w-full object-cover opacity-50"
-            initial={{ scale: 1.12 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-pitch via-pitch/75 to-pitch/25" />
-          <div className="absolute inset-0 bg-gradient-to-t from-pitch to-transparent" />
-        </div>
-        <div className="relative px-5 sm:px-6 md:px-10 pt-16 md:pt-32 pb-16 md:pb-24">
-          <Reveal>
-            <Link to="/industries" className="text-mono text-[11px] text-signal">← {t("industries.view_all")}</Link>
-          </Reveal>
-          <h1 className="mt-8 hero-headline-sm">
-            <RevealWords text={industryName} />
-            <span className="text-signal">.</span>
-          </h1>
-          <Reveal delay={0.3}>
-            <p className="mt-8 max-w-xl text-cool text-base md:text-lg leading-relaxed">{t(`industries.${s}.desc`)}</p>
-          </Reveal>
-
-          {/* Trust strip */}
-          <Reveal delay={0.5}>
-            <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3 text-mono text-[10px] md:text-[11px] text-cool">
-              <span className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-signal" /> {t("industries.trust_delivered")}</span>
-              <span className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-signal" /> {t("industries.trust_years")}</span>
-              <span className="hidden sm:flex items-center gap-2"><Check className="w-3.5 h-3.5 text-signal" /> {t("industries.trust_teams", { industry: industryName })}</span>
-            </div>
-          </Reveal>
-
-          <Reveal delay={0.7}>
-            <div className="mt-10 flex flex-col sm:flex-row gap-3 md:gap-4 max-w-lg">
-              <button
-                onClick={() => openLead({ title: `${t("industries.cta")} · ${industryName}` })}
-                className="signal-glow bg-signal text-crisp text-mono text-[12px] px-6 md:px-8 py-4 md:py-5 hover:bg-signal/90 transition-all flex items-center justify-center gap-3 min-h-14"
-              >
-                {t("industries.cta")}
-                <ArrowUpRight className="w-4 h-4" />
-              </button>
-              <a
-                href={catalogAsset.url}
-                download="radiocom-catalog.pdf"
-                className="text-mono text-[12px] border border-crisp/25 text-crisp px-6 py-4 md:py-5 hover:border-signal hover:text-signal transition-colors flex items-center justify-center gap-2 min-h-14"
-              >
-                <FileDown className="w-4 h-4" /> {t("industries.cta_secondary")}
-              </a>
-            </div>
-          </Reveal>
+      {/* Cinematic hero */}
+      <section className="relative min-h-[85vh] overflow-hidden">
+        <motion.div
+          initial={{ scale: 1.08, opacity: 0.6 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute inset-0"
+        >
+          <img src={IMAGES[s]} alt="" className="absolute inset-0 h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/30" />
+        </motion.div>
+        <div className="relative pt-40 md:pt-56 pb-24 px-6 max-w-[1200px] mx-auto text-white">
+          <Link to="/industries" className="text-white/70 text-[13px] hover:text-white">← {t("industries.view_all")}</Link>
+          <motion.h1
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ ...spring, delay: 0.2 }}
+            className="headline-hero mt-6"
+          >
+            {industryName}.
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ ...spring, delay: 0.3 }}
+            className="mt-6 max-w-xl text-lg md:text-xl text-white/80"
+          >
+            {t(`industries.${s}.desc`)}
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ ...spring, delay: 0.4 }}
+            className="mt-8 flex flex-col sm:flex-row gap-3"
+          >
+            <button
+              onClick={() => openLead({ title: `${t("industries.cta")} · ${industryName}` })}
+              className="pill"
+              style={{ background: "#fff", color: "#000" }}
+            >
+              {t("industries.cta")}
+            </button>
+            <a
+              href={catalogAsset.url}
+              download="radiocom-catalog.pdf"
+              className="pill pill-ghost text-white"
+              style={{ background: "rgba(255,255,255,0.15)", color: "#fff" }}
+            >
+              <FileDown className="w-4 h-4" /> {t("industries.cta_secondary")}
+            </a>
+          </motion.div>
         </div>
       </section>
 
-      {/* Pains */}
-      {pains.length > 0 && (
-        <section className="border-t hairline px-5 sm:px-6 md:px-10 py-16 md:py-24">
-          <Reveal>
-            <div className="text-mono text-[11px] text-signal mb-6">/ 01 · {t("industries.pains_title")}</div>
-          </Reveal>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
-            {pains.map((p, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.6 }}
-                className="relative border-t hairline pt-6 md:pt-8"
-              >
-                <AlertCircle className="w-6 h-6 text-signal mb-4" />
-                <p className="text-display text-xl md:text-2xl leading-tight text-crisp">{p}</p>
-                <motion.div
-                  className="absolute top-0 left-0 h-px bg-signal origin-left"
-                  initial={{ scaleX: 0 }}
-                  whileInView={{ scaleX: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 + 0.3, duration: 0.7 }}
-                  style={{ width: "40%" }}
-                />
-              </motion.div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Problem / Solution */}
-      <section className="border-t hairline grid grid-cols-1 md:grid-cols-2 gap-px bg-crisp/10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="bg-charcoal p-8 md:p-16"
-        >
-          <div className="text-mono text-[10px] text-cool mb-6">/ 02 · {t("industries.problem_title")}</div>
-          <p className="text-display text-2xl md:text-3xl leading-tight text-crisp">
-            {t(`industries.${s}.problem`)}
-          </p>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.15 }}
-          className="bg-signal text-crisp p-8 md:p-16"
-        >
-          <div className="text-mono text-[10px] mb-6 opacity-80">/ 03 · {t("industries.solution_title")}</div>
-          <p className="text-display text-2xl md:text-3xl leading-tight">
-            {t(`industries.${s}.solution`)}
-          </p>
-        </motion.div>
+      {/* Problem / Solution — sticky-story pattern */}
+      <section className="bg-pitch section px-6 md:px-10">
+        <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+          <StoryCard kicker={t("industries.problem_title")} body={t(`industries.${s}.problem`)} tone="light" />
+          <StoryCard kicker={t("industries.solution_title")} body={t(`industries.${s}.solution`)} tone="accent" />
+        </div>
       </section>
 
-      {/* Outcomes / Metrics */}
+      {/* Outcomes */}
       {outcomes.length > 0 && (
-        <section className="border-t hairline px-5 sm:px-6 md:px-10 py-20 md:py-28">
-          <Reveal>
-            <div className="text-mono text-[11px] text-signal mb-6">/ 04 · {t("industries.outcomes_title")}</div>
-          </Reveal>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-            {outcomes.map((o, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.12, duration: 0.7 }}
-                className="border-t hairline pt-6"
-              >
-                <div className="flex items-baseline gap-1">
+        <section className="bg-charcoal section px-6 md:px-10">
+          <div className="max-w-[1200px] mx-auto text-center">
+            <motion.h2
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={spring}
+              className="headline text-crisp text-4xl md:text-6xl"
+            >
+              {t("industries.outcomes_title")}
+            </motion.h2>
+            <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-6">
+              {outcomes.map((o, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.3 }}
+                  transition={{ ...spring, delay: i * 0.08 }}
+                  className="bento-card p-10"
+                  style={{ background: "var(--pitch)" }}
+                >
                   <OutcomeNumber value={o.n} />
-                  {o.u && <span className="text-display text-2xl md:text-3xl text-signal">{o.u}</span>}
-                </div>
-                <div className="text-cool text-sm md:text-base mt-4 leading-relaxed">{o.l}</div>
-              </motion.div>
-            ))}
+                  {o.u && <div className="text-signal text-2xl md:text-3xl font-semibold mt-1">{o.u}</div>}
+                  <div className="subhead text-[15px] mt-4">{o.l}</div>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </section>
       )}
 
       {/* Recommended */}
-      <section className="border-t hairline px-5 sm:px-6 md:px-10 py-16 md:py-24">
-        <Reveal>
-          <div className="text-mono text-[11px] text-signal mb-6">/ 05 · {t("industries.recommended")}</div>
-          <div className="flex flex-wrap items-end justify-between gap-4 mb-12">
-            <h2 className="text-display text-4xl md:text-6xl max-w-3xl">
-              {t("industries.recommended")}<span className="text-signal">.</span>
-            </h2>
-            <Link to="/catalog" className="text-mono text-[11px] text-signal border-b border-signal/50 hover:border-signal">
+      <section className="bg-pitch section px-6 md:px-10">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="flex items-end justify-between mb-10">
+            <h2 className="headline text-crisp text-4xl md:text-5xl">{t("industries.recommended")}</h2>
+            <Link to="/catalog" className="pill-link">
               {t("industries.compare_all")}
             </Link>
           </div>
-        </Reveal>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-crisp/10">
-          {picks.map((p, i) => (
-            <motion.button
-              key={p.id}
-              onClick={() => openLead({ product: p.name })}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: (i % 3) * 0.08 }}
-              className="relative bg-charcoal p-6 md:p-8 text-left group overflow-hidden"
-            >
-              <div className="absolute inset-0 bg-signal origin-bottom scale-y-0 group-hover:scale-y-100 transition-transform duration-500" />
-              <div className="relative">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="text-mono text-[10px] text-cool group-hover:text-crisp">{p.brand}</div>
-                  <ArrowUpRight className="w-4 h-4 text-cool group-hover:text-crisp -rotate-45 group-hover:rotate-0 transition-transform" />
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {picks.slice(0, 6).map((p, i) => (
+              <motion.button
+                key={p.id}
+                onClick={() => openLead({ product: p.name })}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.15 }}
+                transition={{ ...spring, delay: (i % 3) * 0.06 }}
+                className="bento-card p-6 md:p-8 text-left group"
+              >
+                <div className="aspect-square flex items-center justify-center mb-6">
+                  <img src={p.image} alt={p.name} className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-500" />
                 </div>
-                <div className="photo-frame aspect-[4/5] flex items-center justify-center mb-4 overflow-hidden">
-                  <img src={p.image} alt={p.name} className="photo-multiply max-h-full max-w-full object-contain group-hover:scale-105" />
-                </div>
-                <h3 className="text-display text-xl md:text-2xl leading-tight mb-2 group-hover:text-crisp">{p.name}</h3>
-                <div className="text-display text-lg text-signal group-hover:text-crisp mb-3">
-                  {formatPrice(p.price, lang)}
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {p.tags.slice(0, 3).map((tg) => (
-                    <span key={tg} className="text-mono text-[9px] px-2 py-1 border border-crisp/15 group-hover:border-crisp/40 flex items-center gap-1">
-                      <Check className="w-2.5 h-2.5" /> {tg}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </motion.button>
-          ))}
+                <div className="text-[12px] text-cool">{p.brand}</div>
+                <h3 className="text-[15px] font-semibold text-crisp mt-1 leading-tight">{p.name}</h3>
+                <div className="text-[13px] text-cool mt-1">{formatPrice(p.price, lang)}</div>
+              </motion.button>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Testimonial */}
-      <section className="border-t hairline px-5 sm:px-6 md:px-10 py-20 md:py-32">
-        <div className="max-w-4xl">
-          <Reveal>
-            <div className="text-mono text-[11px] text-signal mb-8">/ 06 · {t("industries.quote_kicker")}</div>
-          </Reveal>
-          <Reveal delay={0.2}>
-            <Quote className="w-10 h-10 md:w-14 md:h-14 text-signal mb-6" strokeWidth={1.5} />
-            <p className="text-display text-2xl sm:text-3xl md:text-5xl leading-[1.1] text-crisp">
-              {t(`industries.${s}.quote`)}
-            </p>
-            <div className="mt-8 flex items-center gap-4">
-              <div className="h-px w-10 bg-signal" />
-              <div className="text-mono text-[11px] text-cool">{t(`industries.${s}.quote_author`)}</div>
-            </div>
-          </Reveal>
+      <section className="bg-charcoal py-24 md:py-32 px-6">
+        <div className="max-w-3xl mx-auto text-center">
+          <Quote className="w-10 h-10 text-signal mx-auto mb-6" strokeWidth={1.5} />
+          <p className="headline text-crisp text-2xl md:text-4xl leading-[1.2]">
+            {t(`industries.${s}.quote`)}
+          </p>
+          <div className="mt-6 text-cool text-[13px]">— {t(`industries.${s}.quote_author`)}</div>
         </div>
       </section>
 
       {/* FAQ */}
       {faq.length > 0 && (
-        <section className="border-t hairline px-5 sm:px-6 md:px-10 py-16 md:py-24">
-          <Reveal>
-            <div className="text-mono text-[11px] text-signal mb-6">/ 07 · {t("industries.faq_title")}</div>
-            <h2 className="text-display text-3xl md:text-5xl mb-10 md:mb-16">
-              {t("industries.faq_title")}<span className="text-signal">.</span>
+        <section className="bg-pitch section px-6 md:px-10">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="headline text-crisp text-4xl md:text-5xl text-center mb-12">
+              {t("industries.faq_title")}
             </h2>
-          </Reveal>
-          <div className="max-w-3xl">
-            {faq.map((f, i) => (
-              <FaqRow key={i} q={f.q} a={f.a} />
-            ))}
+            <div className="rounded-3xl bg-charcoal overflow-hidden">
+              {faq.map((f, i) => (
+                <FaqRow key={i} q={f.q} a={f.a} first={i === 0} />
+              ))}
+            </div>
           </div>
         </section>
       )}
 
       {/* Final CTA */}
-      <section className="border-t hairline px-5 sm:px-6 md:px-10 py-24 md:py-32 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-signal/5 to-signal/15 pointer-events-none" />
-        <div className="relative max-w-3xl">
-          <h2 className="hero-headline-sm">
-            {t("industries.cta")}<span className="text-signal">.</span>
-          </h2>
-          <p className="mt-6 text-cool text-base md:text-lg max-w-xl">{t("form.trust_line")}</p>
-          <div className="mt-10 flex flex-col sm:flex-row gap-3 md:gap-4">
-            <MagneticButton onClick={() => openLead({ title: `${t("industries.cta")} · ${industryName}` })}>
-              {t("industries.cta")}
-              <ArrowUpRight className="w-4 h-4" />
-            </MagneticButton>
-            <a
-              href={catalogAsset.url}
-              download="radiocom-catalog.pdf"
-              className="text-mono text-[12px] border border-crisp/25 text-crisp px-6 py-4 hover:border-signal hover:text-signal transition-colors inline-flex items-center justify-center gap-2 min-h-14"
-            >
-              <FileDown className="w-4 h-4" /> {t("industries.cta_secondary")}
-            </a>
-          </div>
+      <section className="bg-black text-white py-24 md:py-40 px-6 text-center">
+        <h2 className="headline text-white mx-auto max-w-3xl" style={{ fontSize: "clamp(2rem, 5vw, 4rem)" }}>
+          {t("industries.cta")}.
+        </h2>
+        <p className="mt-4 text-lg text-white/60 max-w-xl mx-auto">{t("form.trust_line")}</p>
+        <div className="mt-8 flex justify-center gap-4 flex-wrap">
+          <button
+            onClick={() => openLead({ title: `${t("industries.cta")} · ${industryName}` })}
+            className="pill"
+            style={{ background: "#fff", color: "#000" }}
+          >
+            {t("industries.cta")}
+          </button>
+          <Link to="/catalog" className="text-signal text-[15px] inline-flex items-center gap-1">
+            {t("industries.compare_all")} <ChevronRight className="w-4 h-4" />
+          </Link>
         </div>
       </section>
     </>
   );
 }
 
+function StoryCard({ kicker, body, tone }: { kicker: string; body: string; tone: "light" | "accent" }) {
+  const isAccent = tone === "accent";
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={spring}
+      className="rounded-3xl p-8 md:p-12"
+      style={{
+        background: isAccent ? "var(--signal)" : "var(--charcoal)",
+        color: isAccent ? "#fff" : "var(--crisp)",
+      }}
+    >
+      <div className={`text-[13px] mb-4 ${isAccent ? "text-white/70" : "text-cool"}`}>{kicker}</div>
+      <p className="headline text-2xl md:text-3xl leading-[1.2]">{body}</p>
+      {isAccent && <Check className="w-6 h-6 mt-6 opacity-80" />}
+    </motion.div>
+  );
+}
+
 function OutcomeNumber({ value }: { value: string }) {
-  // If pure numeric or numeric with % or K/dB suffix — parse the leading integer part
   const match = value.match(/^(\d+(?:\.\d+)?)(.*)$/);
   if (match) {
     const n = parseFloat(match[1]);
     const suffix = match[2];
     if (n < 10000 && Number.isFinite(n)) {
       return (
-        <span className="metric-num text-crisp" style={{ fontSize: "clamp(3rem, 8vw, 6rem)" }}>
-          <CountUp to={n} /> <span className="text-signal">{suffix}</span>
-        </span>
+        <div className="text-crisp font-semibold tracking-tight" style={{ fontSize: "clamp(3rem, 7vw, 5rem)", lineHeight: 1 }}>
+          <CountUp to={n} />{suffix}
+        </div>
       );
     }
   }
   return (
-    <span className="metric-num text-crisp" style={{ fontSize: "clamp(2.5rem, 7vw, 5rem)" }}>
+    <div className="text-crisp font-semibold tracking-tight" style={{ fontSize: "clamp(2.5rem, 6vw, 4rem)", lineHeight: 1 }}>
       {value}
-    </span>
+    </div>
   );
 }
 
-function FaqRow({ q, a }: { q: string; a: string }) {
+function FaqRow({ q, a, first }: { q: string; a: string; first: boolean }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="border-t hairline">
+    <div className={first ? "" : "border-t border-border"}>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-start justify-between gap-6 py-6 text-left group"
+        className="w-full flex items-center justify-between gap-6 px-6 md:px-8 py-6 text-left"
       >
-        <span className="text-display text-lg md:text-2xl text-crisp group-hover:text-signal transition-colors">{q}</span>
-        <span className="mt-1 shrink-0 h-8 w-8 rounded-full border border-crisp/20 flex items-center justify-center text-cool group-hover:border-signal group-hover:text-signal transition-colors">
+        <span className="text-[16px] md:text-lg font-medium text-crisp">{q}</span>
+        <span className="shrink-0 h-8 w-8 rounded-full bg-pitch flex items-center justify-center text-crisp">
           {open ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
         </span>
       </button>
@@ -348,7 +291,7 @@ function FaqRow({ q, a }: { q: string; a: string }) {
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         className="overflow-hidden"
       >
-        <p className="pb-8 pr-14 text-cool text-base leading-relaxed">{a}</p>
+        <p className="px-6 md:px-8 pb-6 text-[15px] text-cool leading-relaxed">{a}</p>
       </motion.div>
     </div>
   );

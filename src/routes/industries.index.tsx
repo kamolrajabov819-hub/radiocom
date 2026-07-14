@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { ChevronRight } from "lucide-react";
 import { INDUSTRY_SLUGS } from "@/data/industries";
-import { Reveal, RevealWords } from "@/components/Reveal";
 import horecaImg from "@/assets/industry-horeca.jpg";
 import constructionImg from "@/assets/industry-construction.jpg";
 import securityImg from "@/assets/industry-security.jpg";
+import { spring } from "@/lib/springs";
 
 const IMAGES: Record<string, string> = {
   horeca: horecaImg,
@@ -33,57 +33,59 @@ function IndustriesOverview() {
   const { t } = useTranslation();
   return (
     <>
-      <section className="pt-32 md:pt-40 px-6 md:px-10 pb-16">
-        <Reveal><div className="text-mono text-[11px] text-signal mb-6">/ INDUSTRIES</div></Reveal>
-        <h1 className="text-display leading-[0.9]" style={{ fontSize: "clamp(3rem, 10vw, 9rem)" }}>
-          <RevealWords text={t("industries.title")} />
-          <span className="text-signal">.</span>
-        </h1>
-        <Reveal delay={0.3}>
-          <p className="mt-10 max-w-2xl text-cool text-lg leading-relaxed">{t("industries.overview_sub")}</p>
-        </Reveal>
+      <section className="pt-32 md:pt-40 pb-14 md:pb-20 bg-pitch px-6 text-center">
+        <div className="max-w-3xl mx-auto">
+          <motion.h1
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={spring}
+            className="headline text-crisp text-5xl md:text-7xl"
+          >
+            {t("industries.title")}
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ ...spring, delay: 0.1 }}
+            className="subhead mt-4 text-lg md:text-xl"
+          >
+            {t("industries.overview_sub")}
+          </motion.p>
+        </div>
       </section>
 
-      <section className="border-t hairline grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-crisp/10">
-        {INDUSTRY_SLUGS.map((s, i) => (
-          <motion.div
-            key={s}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: (i % 6) * 0.08, duration: 0.5 }}
-          >
-            <Link
-              to="/industries/$slug"
-              params={{ slug: s }}
-              className="relative block overflow-hidden bg-charcoal min-h-[380px] sm:min-h-[440px] group"
+      <section className="bg-pitch px-4 md:px-6 pb-24">
+        <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+          {INDUSTRY_SLUGS.map((s, i) => (
+            <motion.div
+              key={s}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.15 }}
+              transition={{ ...spring, delay: (i % 6) * 0.06 }}
             >
-              <img src={IMAGES[s]} alt="" className="absolute inset-0 h-full w-full object-cover opacity-40 group-hover:opacity-70 group-hover:scale-105 transition-all duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-pitch via-pitch/60 to-transparent" />
-              <div className="relative h-full min-h-[380px] sm:min-h-[440px] flex flex-col justify-between p-6 md:p-8">
-                <div className="text-mono text-[11px] text-cool">0{i + 1}</div>
-                <div>
-                  <h2
-                    className="text-display text-crisp mb-4 group-hover:text-signal transition-colors break-words hyphens-auto leading-[0.95]"
-                    style={{
-                      fontSize: "clamp(1.75rem, 5.5vw, 3rem)",
-                      hyphens: "auto",
-                      overflowWrap: "anywhere",
-                    }}
-                  >
-                    {t(`industries.${s}.name`)}
-                  </h2>
-                  <p className="text-cool text-sm max-w-xs mb-5 line-clamp-2">
-                    {t(`industries.${s}.desc`)}
-                  </p>
-                  <div className="flex items-center gap-2 text-mono text-[11px] text-signal">
-                    {t("industries.cta")} <ArrowUpRight className="w-3 h-3" />
+              <Link
+                to="/industries/$slug"
+                params={{ slug: s }}
+                className="relative block rounded-3xl overflow-hidden group aspect-[16/10]"
+              >
+                <img
+                  src={IMAGES[s]}
+                  alt=""
+                  className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-[900ms]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                <div className="relative h-full flex flex-col justify-end p-8 md:p-10 text-white">
+                  <h2 className="headline text-3xl md:text-5xl">{t(`industries.${s}.name`)}</h2>
+                  <p className="text-white/75 mt-2 text-[15px] max-w-md">{t(`industries.${s}.desc`)}</p>
+                  <div className="mt-4 text-[14px] inline-flex items-center gap-1 text-white">
+                    {t("industries.cta")} <ChevronRight className="w-4 h-4" />
                   </div>
                 </div>
-              </div>
-            </Link>
-          </motion.div>
-        ))}
+              </Link>
+            </motion.div>
+          ))}
+        </div>
       </section>
     </>
   );
