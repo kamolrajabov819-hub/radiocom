@@ -2,18 +2,16 @@ import { createFileRoute } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { Check, X, ArrowUpRight } from "lucide-react";
+import { Check, X, Wifi, Radio, MapPin, MessagesSquare, Layers, Coins } from "lucide-react";
 import antennaImg from "@/assets/poc-antenna.jpg";
-import pocImg from "@/assets/product-poc.jpg";
-import { Reveal, RevealWords } from "@/components/Reveal";
-import { MagneticButton } from "@/components/MagneticButton";
 import { openLead } from "@/components/LeadFormSheet";
+import { spring } from "@/lib/springs";
 
 export const Route = createFileRoute("/poc")({
   head: () => ({
     meta: [
       { title: "PoC Systems & Network Design — Push-to-Talk over Cellular | Radiocom" },
-      { name: "description", content: "Push-to-Talk over Cellular systems, PMR comparison, network design, commissioning and radio rental across Uzbekistan." },
+      { name: "description", content: "Push-to-Talk over Cellular systems, PMR comparison, network design and radio rental across Uzbekistan." },
       { property: "og:title", content: "PoC · Global range, zero repeaters" },
       { property: "og:description", content: "Instant group communication over LTE and WiFi with GPS and multimedia." },
     ],
@@ -25,7 +23,7 @@ function PoCPage() {
   return (
     <>
       <PocHero />
-      <VsTable />
+      <Compare />
       <NetworkDesign />
       <Rental />
     </>
@@ -36,98 +34,130 @@ function PocHero() {
   const { t } = useTranslation();
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
-  return (
-    <section ref={ref} className="relative min-h-[90vh] overflow-hidden pt-16">
-      <motion.div style={{ y }} className="absolute inset-0">
-        <img src={antennaImg} alt="" className="absolute inset-0 h-full w-full object-cover opacity-40" />
-        <div className="absolute inset-0 bg-gradient-to-r from-pitch via-pitch/80 to-pitch/20" />
-      </motion.div>
+  const revealTo = useTransform(scrollYProgress, [0, 0.6], [50, 100]);
 
-      {/* radar rings */}
-      <div className="absolute right-8 md:right-24 top-32 pointer-events-none">
-        {[80, 160, 240, 320].map((s, i) => (
-          <motion.div
-            key={s}
-            className="absolute rounded-full border border-signal/30"
-            style={{ width: s, height: s, top: -s / 2, left: -s / 2 }}
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: [0, 0.6, 0], scale: [0, 1, 1.4] }}
-            transition={{ duration: 3, delay: i * 0.5, repeat: Infinity }}
-          />
-        ))}
-        <div className="absolute -top-1 -left-1 h-2 w-2 rounded-full bg-signal" />
+  return (
+    <section ref={ref} className="pt-40 md:pt-56 pb-24 md:pb-32 bg-pitch overflow-hidden">
+      <div className="max-w-[1200px] mx-auto px-6 text-center">
+        <div className="text-signal text-[13px] mb-6">{t("poc.kicker")}</div>
+        <motion.h1
+          style={{
+            backgroundImage: useTransform(
+              revealTo,
+              (v) => `linear-gradient(180deg, var(--crisp) 0%, var(--crisp) ${v}%, color-mix(in oklab, var(--crisp) 25%, transparent) 100%)`,
+            ) as unknown as string,
+          }}
+          className="headline-hero text-crisp"
+        >
+          {t("poc.title_a")}<br />{t("poc.title_b")}
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ ...spring, delay: 0.1 }}
+          className="subhead mt-6 text-lg md:text-xl max-w-2xl mx-auto"
+        >
+          {t("poc.sub")}
+        </motion.p>
       </div>
 
-      <div className="relative px-6 md:px-10 pt-24 md:pt-40 pb-16">
-        <Reveal>
-          <div className="text-mono text-[11px] text-signal mb-8">{t("poc.kicker")}</div>
-        </Reveal>
-        <h1 className="text-display text-[13vw] md:text-[9vw] leading-[0.85] max-w-6xl">
-          <RevealWords text={t("poc.title_a")} />
-          <span className="block pl-[8vw]">
-            <RevealWords text={t("poc.title_b")} stagger={0.06} />
-          </span>
-        </h1>
-        <Reveal delay={0.6}>
-          <p className="mt-12 max-w-2xl text-cool text-lg md:text-xl leading-relaxed">{t("poc.sub")}</p>
-        </Reveal>
+      <div className="mt-20 max-w-[1200px] mx-auto px-6">
+        <div className="rounded-3xl overflow-hidden aspect-[16/8] bg-charcoal">
+          <img src={antennaImg} alt="" className="w-full h-full object-cover" />
+        </div>
       </div>
     </section>
   );
 }
 
-function VsTable() {
+/* PoC vs PMR — dual card comparison, no table */
+function Compare() {
   const { t } = useTranslation();
-  const keys = ["coverage", "infra", "media", "gps", "scale", "cost"] as const;
+
+  const pocPoints = [
+    { Icon: Wifi, label: t("poc.poc_vals.coverage") },
+    { Icon: Layers, label: t("poc.poc_vals.infra") },
+    { Icon: MessagesSquare, label: t("poc.poc_vals.media") },
+    { Icon: MapPin, label: t("poc.poc_vals.gps") },
+  ];
+  const pmrPoints = [
+    { Icon: Radio, label: t("poc.pmr_vals.coverage") },
+    { Icon: Layers, label: t("poc.pmr_vals.infra") },
+    { Icon: MessagesSquare, label: t("poc.pmr_vals.media") },
+    { Icon: Coins, label: t("poc.pmr_vals.cost") },
+  ];
 
   return (
-    <section className="border-t hairline px-6 md:px-10 py-24">
-      <div className="grid grid-cols-12 gap-6 mb-16">
-        <div className="col-span-12 md:col-span-6">
-          <Reveal>
-            <h2 className="text-display text-5xl md:text-7xl">{t("poc.vs_title")}</h2>
-          </Reveal>
-        </div>
-        <div className="col-span-12 md:col-span-5 md:col-start-8 flex items-end">
-          <Reveal delay={0.2}>
-            <p className="text-cool">{t("poc.vs_sub")}</p>
-          </Reveal>
-        </div>
-      </div>
+    <section className="bg-charcoal section px-6 md:px-10">
+      <div className="max-w-[1200px] mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={spring}
+          className="text-center mb-14"
+        >
+          <h2 className="headline text-crisp text-4xl md:text-6xl">{t("poc.vs_title")}</h2>
+          <p className="subhead mt-4 text-lg max-w-2xl mx-auto">{t("poc.vs_sub")}</p>
+        </motion.div>
 
-      <div className="grid grid-cols-12 gap-px bg-crisp/10 border hairline">
-        {/* header */}
-        <div className="col-span-4 bg-pitch p-6 text-mono text-[10px] text-cool">PARAMETER</div>
-        <div className="col-span-4 bg-signal p-6 text-mono text-[10px] text-crisp flex items-center gap-2">
-          <Check className="w-3 h-3" /> PoC
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <CompareCard
+            kind="poc"
+            title="PoC"
+            headline={t("poc.compare.poc.title")}
+            points={pocPoints}
+          />
+          <CompareCard
+            kind="pmr"
+            title="PMR / DMR"
+            headline={t("poc.compare.pmr.title")}
+            points={pmrPoints}
+          />
         </div>
-        <div className="col-span-4 bg-charcoal p-6 text-mono text-[10px] text-cool">PMR / DMR</div>
-
-        {keys.map((k, i) => (
-          <motion.div
-            key={k}
-            className="contents"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.08 }}
-          >
-            <div className="col-span-4 bg-pitch p-6 text-sm text-cool">
-              {t(`poc.rows.${k}`)}
-            </div>
-            <div className="col-span-4 bg-pitch p-6 text-sm text-crisp flex items-center gap-3">
-              <Check className="w-4 h-4 text-signal shrink-0" />
-              {t(`poc.poc_vals.${k}`)}
-            </div>
-            <div className="col-span-4 bg-pitch p-6 text-sm text-cool flex items-center gap-3">
-              <X className="w-4 h-4 text-cool/60 shrink-0" />
-              {t(`poc.pmr_vals.${k}`)}
-            </div>
-          </motion.div>
-        ))}
       </div>
     </section>
+  );
+}
+
+function CompareCard({
+  kind, title, headline, points,
+}: {
+  kind: "poc" | "pmr";
+  title: string;
+  headline: string;
+  points: { Icon: React.ComponentType<{ className?: string }>; label: string }[];
+}) {
+  const accent = kind === "poc";
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={spring}
+      className="rounded-3xl p-8 md:p-12"
+      style={{ background: accent ? "var(--signal)" : "var(--pitch)", color: accent ? "#fff" : "var(--crisp)" }}
+    >
+      <div className={`text-[13px] mb-3 ${accent ? "text-white/70" : "text-cool"}`}>{title}</div>
+      <h3 className="headline text-3xl md:text-4xl">{headline}</h3>
+      <ul className="mt-8 space-y-4">
+        {points.map((p, i) => (
+          <li key={i} className="flex items-start gap-4">
+            <span
+              className="h-9 w-9 rounded-full flex items-center justify-center shrink-0"
+              style={{ background: accent ? "rgba(255,255,255,0.18)" : "var(--charcoal)" }}
+            >
+              {accent ? <Check className="w-4 h-4" /> : <X className="w-4 h-4 text-cool" />}
+            </span>
+            <div className="flex-1">
+              <div className={`text-[15px] ${accent ? "text-white" : "text-crisp"}`}>{p.label}</div>
+            </div>
+            <p.Icon className={`w-5 h-5 mt-2 shrink-0 ${accent ? "text-white/70" : "text-cool"}`} />
+          </li>
+        ))}
+      </ul>
+    </motion.div>
   );
 }
 
@@ -135,40 +165,27 @@ function NetworkDesign() {
   const { t } = useTranslation();
   const steps = t("poc.design.steps", { returnObjects: true }) as string[];
   return (
-    <section className="border-t hairline px-6 md:px-10 py-24 relative overflow-hidden">
-      <div className="grid grid-cols-12 gap-8">
-        <div className="col-span-12 md:col-span-5">
-          <Reveal>
-            <div className="text-mono text-[11px] text-signal mb-6">{t("poc.design.kicker")}</div>
-            <h2 className="text-display text-4xl md:text-6xl mb-10 leading-tight">{t("poc.design.title")}</h2>
-          </Reveal>
-          <div className="aspect-[4/5] relative bg-charcoal overflow-hidden">
-            <img src={pocImg} alt="" className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
-          </div>
-        </div>
-
-        <div className="col-span-12 md:col-span-6 md:col-start-7 md:pt-24">
-          <ol className="space-y-6">
-            {steps.map((s, i) => (
-              <motion.li
-                key={i}
-                className="grid grid-cols-12 gap-6 items-start border-t hairline pt-6"
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.6 }}
-              >
-                <div className="col-span-2 text-mono text-[11px] text-signal">
-                  0{i + 1}
-                </div>
-                <div className="col-span-10 text-crisp text-lg md:text-xl leading-snug">{s}</div>
-              </motion.li>
-            ))}
-          </ol>
-          <div className="mt-10 text-mono text-[11px] text-cool border-t hairline pt-6">
-            +998 93 381-16-20 · +998 71 233-16-20
-          </div>
-        </div>
+    <section className="bg-pitch section px-6 md:px-10">
+      <div className="max-w-[1200px] mx-auto text-center">
+        <div className="text-signal text-[13px] mb-4">{t("poc.design.kicker")}</div>
+        <h2 className="headline text-crisp text-4xl md:text-6xl max-w-3xl mx-auto">
+          {t("poc.design.title")}
+        </h2>
+        <ol className="mt-14 grid grid-cols-1 md:grid-cols-5 gap-3 text-left">
+          {steps.map((s, i) => (
+            <motion.li
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ ...spring, delay: i * 0.06 }}
+              className="bento-card p-6"
+            >
+              <div className="text-signal text-[13px]">0{i + 1}</div>
+              <div className="text-crisp text-[15px] mt-3 leading-snug">{s}</div>
+            </motion.li>
+          ))}
+        </ol>
       </div>
     </section>
   );
@@ -177,42 +194,21 @@ function NetworkDesign() {
 function Rental() {
   const { t } = useTranslation();
   return (
-    <section className="border-t hairline relative overflow-hidden">
-      <div className="px-6 md:px-10 py-24 grid grid-cols-12 gap-8">
-        <div className="col-span-12 md:col-span-7">
-          <Reveal>
-            <div className="text-mono text-[11px] text-signal mb-6">{t("poc.rental.kicker")}</div>
-            <h2 className="text-display text-5xl md:text-8xl leading-[0.9]">
-              {t("poc.rental.title")}
-            </h2>
-          </Reveal>
-          <Reveal delay={0.3}>
-            <p className="mt-10 text-cool text-lg max-w-lg">{t("poc.rental.desc")}</p>
-            <div className="mt-10">
-              <MagneticButton onClick={() => openLead({ title: t("poc.rental.cta") })}>
-                {t("poc.rental.cta")}
-                <ArrowUpRight className="w-4 h-4" />
-              </MagneticButton>
-            </div>
-          </Reveal>
-        </div>
-
-        <div className="col-span-12 md:col-span-5 flex items-end">
-          <div className="w-full grid grid-cols-5 gap-1">
-            {[1, 7, 30, 365, 1825].map((d, i) => (
-              <motion.div
-                key={d}
-                className="border border-crisp/15 p-3 flex flex-col justify-between aspect-[2/3]"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-              >
-                <div className="text-mono text-[9px] text-cool">{i === 4 ? "5+" : i === 3 ? "1Y" : `${d}D`}</div>
-                <div className={`h-${(i + 1) * 6} bg-signal/${20 + i * 15}`} style={{ height: `${(i + 1) * 18}%`, background: `oklch(0.58 0.24 25 / ${0.2 + i * 0.15})` }} />
-              </motion.div>
-            ))}
-          </div>
+    <section className="bg-black text-white py-24 md:py-40 px-6 text-center">
+      <div className="max-w-3xl mx-auto">
+        <div className="text-signal text-[13px] mb-4">{t("poc.rental.kicker")}</div>
+        <h2 className="headline text-white" style={{ fontSize: "clamp(2.25rem, 6vw, 4.5rem)" }}>
+          {t("poc.rental.title")}
+        </h2>
+        <p className="mt-5 text-lg md:text-xl text-white/60">{t("poc.rental.desc")}</p>
+        <div className="mt-8">
+          <button
+            onClick={() => openLead({ title: t("poc.rental.cta") })}
+            className="pill"
+            style={{ background: "#fff", color: "#000" }}
+          >
+            {t("poc.rental.cta")}
+          </button>
         </div>
       </div>
     </section>
