@@ -5,7 +5,7 @@ import { applyTheme, getInitialTheme, type Theme } from "@/lib/theme";
 
 export function ThemeToggle() {
   const { t } = useTranslation();
-  const [theme, setTheme] = useState<Theme>("dark");
+  const [theme, setTheme] = useState<Theme>("light");
   useEffect(() => { setTheme(getInitialTheme()); }, []);
   const toggle = () => {
     const next: Theme = theme === "dark" ? "light" : "dark";
@@ -17,9 +17,9 @@ export function ThemeToggle() {
     <button
       onClick={toggle}
       aria-label={isDark ? t("nav.theme_light") : t("nav.theme_dark")}
-      className="h-8 w-8 flex items-center justify-center border border-crisp/15 rounded-full text-cool hover:text-signal hover:border-signal transition-colors"
+      className="h-8 w-8 flex items-center justify-center rounded-full text-crisp/80 hover:text-crisp hover:bg-charcoal transition-colors"
     >
-      {isDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+      {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
     </button>
   );
 }

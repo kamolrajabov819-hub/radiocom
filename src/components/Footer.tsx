@@ -1,76 +1,66 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
 import { Socials } from "./Socials";
-import { MapEmbed } from "./MapEmbed";
 import { INDUSTRY_SLUGS } from "@/data/industries";
 
 export function Footer() {
   const { t } = useTranslation();
   return (
-    <footer className="border-t hairline mt-32">
-      <div className="border-b hairline">
-        <MapEmbed />
-      </div>
-      <div className="px-6 md:px-10 py-16 grid grid-cols-1 md:grid-cols-12 gap-10">
-        <div className="md:col-span-4">
-          <div className="flex items-center gap-2.5">
-            <svg width="32" height="32" viewBox="0 0 28 28" fill="none">
-              <path d="M4 20 A10 10 0 0 1 24 20" stroke="currentColor" strokeWidth="1.5" opacity="0.4" />
-              <path d="M7.5 20 A6.5 6.5 0 0 1 20.5 20" stroke="currentColor" strokeWidth="1.5" opacity="0.7" />
-              <circle cx="14" cy="20" r="3" fill="var(--signal)" />
-            </svg>
-            <span className="text-display text-2xl">RADIOCOM</span>
-          </div>
-          <p className="text-cool text-sm mt-6 max-w-md leading-relaxed">{t("footer.address")}</p>
-          <p className="text-mono text-[11px] text-cool mt-4">{t("footer.hours")}</p>
-          <div className="mt-6">
-            <div className="text-mono text-[10px] text-cool mb-3">{t("footer.follow")}</div>
-            <Socials />
-          </div>
-        </div>
-
-        <div className="md:col-span-3">
-          <div className="text-mono text-[10px] text-cool mb-4">{t("footer.contact_col")}</div>
-          <ul className="space-y-2 text-sm">
-            <li><a href="tel:+998781131618" className="hover:text-signal">+998 78 113-16-18</a></li>
-            <li><a href="tel:+998933870710" className="hover:text-signal">+998 93 387-07-10</a></li>
-            <li><a href="tel:+998935050719" className="hover:text-signal">+998 93 505-07-19</a></li>
-            <li className="pt-2"><a href="mailto:info@radiocom.uz" className="hover:text-signal">info@radiocom.uz</a></li>
-            <li><a href="mailto:sales@radiocom.uz" className="hover:text-signal">sales@radiocom.uz</a></li>
-          </ul>
-        </div>
-
-        <div className="md:col-span-2">
-          <div className="text-mono text-[10px] text-cool mb-4">{t("footer.nav_col")}</div>
-          <ul className="space-y-2 text-sm">
-            <li><Link to="/" className="hover:text-signal">{t("nav.home")}</Link></li>
-            <li><Link to="/catalog" className="hover:text-signal">{t("nav.catalog")}</Link></li>
-            <li><Link to="/poc" className="hover:text-signal">{t("nav.poc")}</Link></li>
-            <li><Link to="/service" className="hover:text-signal">{t("nav.service")}</Link></li>
-            <li><Link to="/industries" className="hover:text-signal">{t("nav.industries")}</Link></li>
-          </ul>
-        </div>
-
-        <div className="md:col-span-3">
-          <div className="text-mono text-[10px] text-cool mb-4">{t("nav.industries")}</div>
-          <ul className="space-y-2 text-sm">
+    <footer className="mt-24 bg-charcoal">
+      <div className="max-w-[1440px] mx-auto px-6 md:px-10 pt-16 pb-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 border-b border-border pb-12">
+          <FooterCol title={t("footer.nav_col")}>
+            <FLink to="/">{t("nav.home")}</FLink>
+            <FLink to="/catalog">{t("nav.catalog")}</FLink>
+            <FLink to="/poc">{t("nav.poc")}</FLink>
+            <FLink to="/service">{t("nav.service")}</FLink>
+            <FLink to="/industries">{t("nav.industries")}</FLink>
+          </FooterCol>
+          <FooterCol title={t("nav.industries")}>
             {INDUSTRY_SLUGS.map((s) => (
               <li key={s}>
-                <Link to="/industries/$slug" params={{ slug: s }} className="hover:text-signal">
+                <Link to="/industries/$slug" params={{ slug: s }} className="text-[13px] text-crisp/70 hover:text-crisp">
                   {t(`industries.${s}.name`)}
                 </Link>
               </li>
             ))}
-          </ul>
+          </FooterCol>
+          <FooterCol title={t("footer.contact_col")}>
+            <li><a href="tel:+998781131618" className="text-[13px] text-crisp/70 hover:text-crisp">+998 78 113-16-18</a></li>
+            <li><a href="tel:+998933870710" className="text-[13px] text-crisp/70 hover:text-crisp">+998 93 387-07-10</a></li>
+            <li><a href="mailto:info@radiocom.uz" className="text-[13px] text-crisp/70 hover:text-crisp">info@radiocom.uz</a></li>
+            <li><a href="mailto:sales@radiocom.uz" className="text-[13px] text-crisp/70 hover:text-crisp">sales@radiocom.uz</a></li>
+          </FooterCol>
+          <FooterCol title="Radiocom">
+            <li className="text-[13px] text-crisp/70 leading-relaxed">{t("footer.address")}</li>
+            <li className="text-[13px] text-crisp/70 mt-1">{t("footer.hours")}</li>
+            <li className="pt-3"><Socials /></li>
+          </FooterCol>
         </div>
-      </div>
-      <div className="border-t hairline px-6 md:px-10 py-6 flex flex-wrap items-center justify-between gap-4">
-        <div className="text-mono text-[10px] text-cool">{t("footer.rights")}</div>
-        <div className="text-mono text-[10px] text-cool flex items-center gap-3">
-          <span className="h-1 w-1 rounded-full bg-signal" />
-          MOTOROLA · HYTERA · RADIOCOM RC · CALTTA · DECROSS
+        <div className="pt-6 flex flex-wrap items-center justify-between gap-3">
+          <div className="text-[12px] text-cool">{t("footer.rights")}</div>
+          <div className="text-[12px] text-cool">MOTOROLA · HYTERA · RADIOCOM RC · CALTTA · DECROSS</div>
         </div>
       </div>
     </footer>
+  );
+}
+
+function FooterCol({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <div className="text-[12px] font-semibold text-crisp mb-4">{title}</div>
+      <ul className="space-y-2.5">{children}</ul>
+    </div>
+  );
+}
+
+function FLink({ to, children }: { to: "/" | "/catalog" | "/poc" | "/service" | "/industries"; children: React.ReactNode }) {
+  return (
+    <li>
+      <Link to={to} className="text-[13px] text-crisp/70 hover:text-crisp transition-colors">
+        {children}
+      </Link>
+    </li>
   );
 }

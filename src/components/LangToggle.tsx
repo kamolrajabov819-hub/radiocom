@@ -12,16 +12,14 @@ export function LangToggle() {
   };
 
   return (
-    <div className="text-mono text-[11px] flex items-center gap-0 border border-crisp/15 rounded-full overflow-hidden">
-      {langs.map((l, i) => (
+    <div className="text-[12px] flex items-center rounded-full bg-charcoal p-0.5">
+      {langs.map((l) => (
         <button
           key={l}
           onClick={() => change(l)}
-          className={`px-2.5 py-1 transition-colors ${
-            current === l
-              ? "bg-signal text-crisp"
-              : "text-cool hover:text-crisp"
-          } ${i > 0 ? "border-l border-crisp/15" : ""}`}
+          className={`px-2.5 py-1 rounded-full transition-colors ${
+            current === l ? "bg-pitch text-crisp shadow-sm" : "text-cool hover:text-crisp"
+          }`}
         >
           {l.toUpperCase()}
         </button>

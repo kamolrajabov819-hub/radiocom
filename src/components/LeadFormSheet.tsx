@@ -1,8 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { RadarLoader } from "./RadarLoader";
-import { X } from "lucide-react";
+import { X, Loader2, Check } from "lucide-react";
+import { spring } from "@/lib/springs";
 
 type Ctx = { open: boolean; title?: string; product?: string };
 let listeners: Array<(c: Ctx) => void> = [];
@@ -26,9 +26,7 @@ export function LeadFormSheet() {
   useEffect(() => {
     const l = (c: Ctx) => setCtx({ ...c });
     listeners.push(l);
-    return () => {
-      listeners = listeners.filter((x) => x !== l);
-    };
+    return () => { listeners = listeners.filter((x) => x !== l); };
   }, []);
 
   useEffect(() => {
@@ -57,55 +55,57 @@ export function LeadFormSheet() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <div className="absolute inset-0 bg-pitch/80 backdrop-blur-sm" onClick={closeLead} />
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-md" onClick={closeLead} />
           <motion.aside
-            className="absolute right-0 top-0 h-full w-full max-w-[520px] bg-charcoal border-l hairline overflow-y-auto"
+            className="absolute right-0 top-0 h-full w-full max-w-[520px] bg-pitch overflow-y-auto md:rounded-l-3xl"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
-            transition={{ ease: [0.22, 1, 0.36, 1], duration: 0.5 }}
+            transition={spring}
           >
-            <div className="p-8 md:p-12">
-              <div className="flex items-start justify-between mb-10">
+            <div className="p-8 md:p-10">
+              <div className="flex items-start justify-between mb-8">
                 <div>
-                  <div className="text-mono text-[11px] text-signal mb-3">{ctx.title ?? t("form.title")}</div>
-                  <h2 className="text-display text-4xl">{t("form.title")}</h2>
+                  <div className="text-signal text-[13px] mb-2">{ctx.title ?? t("form.title")}</div>
+                  <h2 className="headline text-3xl md:text-4xl text-crisp">{t("form.title")}</h2>
                 </div>
-                <button onClick={closeLead} className="text-cool hover:text-signal p-1">
-                  <X className="w-5 h-5" />
+                <button
+                  onClick={closeLead}
+                  className="h-9 w-9 flex items-center justify-center rounded-full bg-charcoal text-crisp hover:opacity-70"
+                  aria-label="Close"
+                >
+                  <X className="w-4 h-4" />
                 </button>
               </div>
 
               {sent ? (
-                <div className="py-16">
-                  <RadarLoader size={48} />
-                  <p className="mt-8 text-mono text-[13px] text-signal">{t("form.success")}</p>
+                <div className="py-12 text-center">
+                  <div className="mx-auto h-14 w-14 rounded-full bg-signal/10 flex items-center justify-center mb-6">
+                    <Check className="w-6 h-6 text-signal" strokeWidth={2.5} />
+                  </div>
+                  <p className="text-crisp text-lg">{t("form.success")}</p>
                 </div>
               ) : (
                 <>
-                  <p className="text-cool text-sm mb-8 leading-relaxed">{t("form.sub")}</p>
+                  <p className="subhead text-[15px] mb-8">{t("form.sub")}</p>
                   {ctx.product && (
-                    <div className="mb-6 border hairline px-4 py-3 text-mono text-[11px] text-cool">
-                      → {ctx.product}
+                    <div className="mb-6 rounded-2xl bg-charcoal px-4 py-3 text-[13px] text-crisp">
+                      {ctx.product}
                     </div>
                   )}
-                  <form onSubmit={submit} className="space-y-5">
+                  <form onSubmit={submit} className="space-y-4">
                     <Field name="name" label={t("form.name")} required />
-                    <Field name="company" label={t("form.company")} />
                     <Field name="phone" label={t("form.phone")} required type="tel" />
-                    <Field name="qty" label={t("form.qty")} type="number" />
                     <Field name="message" label={t("form.message")} textarea />
                     <button
                       type="submit"
                       disabled={sending}
-                      className="w-full mt-4 bg-signal text-crisp text-mono text-[13px] py-4 hover:bg-signal/90 transition-colors flex items-center justify-center gap-3 disabled:opacity-70"
+                      className="pill pill-accent w-full mt-2 disabled:opacity-70"
                     >
-                      {sending ? <RadarLoader size={16} /> : null}
+                      {sending && <Loader2 className="w-4 h-4 animate-spin" />}
                       {t("form.submit")}
                     </button>
-                    <div className="text-center text-mono text-[10px] text-cool mt-3">
-                      {t("form.trust_line")}
-                    </div>
+                    <div className="text-center text-[12px] text-cool pt-2">{t("form.trust_line")}</div>
                   </form>
                 </>
               )}
@@ -120,24 +120,17 @@ export function LeadFormSheet() {
 function Field({
   name, label, required, type = "text", textarea,
 }: { name: string; label: string; required?: boolean; type?: string; textarea?: boolean }) {
+  const cls =
+    "w-full rounded-2xl bg-charcoal border border-transparent focus:border-signal focus:bg-pitch outline-none px-4 py-3 text-[15px] text-crisp placeholder-cool transition-colors";
   return (
-    <label className="block group">
-      <span className="text-mono text-[10px] text-cool block mb-2">
-        {label}{required && <span className="text-signal ml-1">*</span>}
+    <label className="block">
+      <span className="block text-[13px] text-cool mb-1.5">
+        {label}{required && <span className="text-signal ml-0.5">*</span>}
       </span>
       {textarea ? (
-        <textarea
-          name={name}
-          rows={3}
-          className="w-full bg-transparent border-b hairline border-crisp/20 focus:border-signal outline-none py-2 text-sm text-crisp transition-colors resize-none"
-        />
+        <textarea name={name} rows={3} className={cls + " resize-none"} />
       ) : (
-        <input
-          name={name}
-          type={type}
-          required={required}
-          className="w-full bg-transparent border-b hairline border-crisp/20 focus:border-signal outline-none py-2 text-sm text-crisp transition-colors"
-        />
+        <input name={name} type={type} required={required} className={cls} />
       )}
     </label>
   );
